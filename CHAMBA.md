@@ -44,7 +44,7 @@ git push origin feature/[TU_ROL]/[TAREA]
 
 ---
 
-## 👤 Base de Datos - @[NOMBRE]
+## 👤 Base de Datos - Fer
 
 ### Tu chamba HOY:
 
@@ -114,7 +114,7 @@ WHERE DATE(fecha) = CURDATE();
 
 ---
 
-## 💻 Backend - @[NOMBRE]
+## 💻 Backend - Luisito
 
 ### Tu chamba HOY:
 
@@ -190,11 +190,13 @@ Implementar los endpoints que faltan. Usa como referencia `actions/ventas_confir
 
 ---
 
-## 🎨 Frontend (UX-UI) - @[NOMBRE]
+## 🎨 Frontend (UX-UI) - Abraham
 
 ### Tu chamba HOY:
 
 Maquetar las 4 páginas principales. **NO necesitas conectar los endpoints aún**, solo el HTML/CSS/JS básico.
+
+### Aqui archivos de referencia para que se los mandes a la IA para que sigua estos patrones:
 
 **1. POS Principal - `index.php`**
 
@@ -435,7 +437,7 @@ Usa Bootstrap. Haz que se vea profesional para impresión A4.
 
 ---
 
-## 🔒 Seguridad - @[NOMBRE]
+## 🔒 Seguridad/Auth - SantiJuan
 
 ### Tu chamba (MAÑANA o cuando haya endpoints para testear):
 
@@ -458,13 +460,13 @@ Crea un archivo `docs/seguridad.md` documentando las protecciones implementadas.
 
 ---
 
-## 🖨️ Hardware - @[NOMBRE]
+## 🖨️ Hardware - Nolberto
 
-### Tu chamba (ÚLTIMA SEMANA):
+### Tu chamba (Mañana):
 
 Por ahora solo prepara:
 
-**Investigación HOY:**
+**Investigación:**
 - [ ] Buscar el modelo exacto de la impresora térmica que usará el profe
 - [ ] Descargar drivers del fabricante (Bixolon, Epson, Star, etc.)
 - [ ] Leer manual de instalación
@@ -474,7 +476,7 @@ Por ahora solo prepara:
   - Pasos de instalación (Windows/Linux)
   - Configuración de tamaño de papel (80×40mm)
 
-**Cuando tengas la impresora física:**
+**Cuando tengas la impresora física (el dia que el profe nos deje probarla):**
 - Probar `ticket.php` imprime correctamente
 - Ajustar CSS si hay márgenes raros
 - Tomar fotos/capturas para evidencia
@@ -511,6 +513,4 @@ Por ahora solo prepara:
 
 1. Revisa el código que ya está en el repo (es tu referencia)
 2. Pregunta en el grupo
-3. Si algo no jala, documenta el error y avísame
-
-Manos a la obra. 🚀
+3. Si algo no jala, avísa
