@@ -18,9 +18,9 @@ Equipo, ya está el repo base con toda la estructura. Aquí están las instrucci
 git clone [URL_DEL_REPO]
 cd papeleria-pos
 
-# 2. Crear tu branch desde dev
-git checkout dev
-git pull origin dev
+# 2. Crear tu branch desde main
+git checkout main
+git pull origin main
 git checkout -b feature/[TU_ROL]/[TAREA]
 
 # Ejemplos:
@@ -500,7 +500,7 @@ Por ahora solo prepara:
 
 **HOY antes de las 11:59 PM:**
 - Push de tu branch
-- Pull Request hacia `dev` con descripción clara
+- Pull Request hacia `main` con descripción clara
 
 **Mañana:**
 - Revisaré PRs y haré merge
