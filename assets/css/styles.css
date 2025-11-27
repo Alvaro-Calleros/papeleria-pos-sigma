@@ -1,0 +1,286 @@
+/* Papelería Sigma - Tema Ecológico */
+:root {
+    --verde-primary: #2d5016;
+    --verde-secondary: #4a7c2f;
+    --verde-light: #6ba03e;
+    --cafe-dark: #3e2723;
+    --cafe-medium: #5d4037;
+    --cafe-light: #8d6e63;
+    --blanco: #ffffff;
+    --gris-light: #f5f5f5;
+    --gris-medium: #e0e0e0;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--gris-light);
+    color: var(--cafe-dark);
+}
+
+/* Navbar */
+.navbar-custom {
+    background: linear-gradient(135deg, var(--verde-primary), var(--verde-secondary));
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--blanco) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-emoji {
+    font-size: 1.8rem;
+    animation: plantGrow 2s ease-in-out infinite;
+}
+
+@keyframes plantGrow {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.navbar-text {
+    color: var(--blanco) !important;
+}
+
+.btn-logout {
+    background-color: var(--cafe-medium);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: var(--cafe-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 20px var(--shadow);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--verde-light), var(--verde-secondary));
+    color: var(--blanco);
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Inputs */
+.form-control:focus {
+    border-color: var(--verde-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(74, 124, 47, 0.25);
+}
+
+.barcode-input {
+    border: 3px solid var(--verde-secondary);
+    border-radius: 8px;
+    font-size: 1.2rem;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.barcode-input:focus {
+    border-color: var(--verde-light);
+    box-shadow: 0 0 0 0.3rem rgba(107, 160, 62, 0.3);
+    transform: scale(1.02);
+}
+
+/* Botones */
+.btn-primary-custom {
+    background: linear-gradient(135deg, var(--verde-secondary), var(--verde-light));
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background: linear-gradient(135deg, var(--verde-primary), var(--verde-secondary));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.btn-success-custom {
+    background-color: var(--verde-light);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-success-custom:hover:not(:disabled) {
+    background-color: var(--verde-secondary);
+    transform: scale(1.05);
+}
+
+.btn-success-custom:disabled {
+    background-color: var(--gris-medium);
+    cursor: not-allowed;
+}
+
+.btn-danger-custom {
+    background-color: #d32f2f;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-danger-custom:hover {
+    background-color: #b71c1c;
+    transform: translateY(-2px);
+}
+
+/* Tabla */
+.table-custom {
+    background-color: var(--blanco);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-custom thead {
+    background-color: var(--verde-secondary);
+    color: var(--blanco);
+}
+
+.table-custom tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-custom tbody tr:hover {
+    background-color: rgba(107, 160, 62, 0.1);
+}
+
+/* Totales Panel */
+.totales-card {
+    background: linear-gradient(135deg, var(--blanco), var(--gris-light));
+    border-left: 4px solid var(--verde-secondary);
+}
+
+.total-display {
+    color: var(--verde-primary);
+    font-weight: 800;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Alert personalizado */
+.alert-success-custom {
+    background-color: rgba(107, 160, 62, 0.2);
+    border-left: 4px solid var(--verde-light);
+    color: var(--verde-primary);
+    border-radius: 8px;
+}
+
+.alert-danger-custom {
+    background-color: rgba(211, 47, 47, 0.2);
+    border-left: 4px solid #d32f2f;
+    color: #b71c1c;
+    border-radius: 8px;
+}
+
+/* Loading spinner */
+.spinner-custom {
+    border: 3px solid var(--gris-light);
+    border-top: 3px solid var(--verde-secondary);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Badge */
+.badge-custom {
+    background-color: var(--verde-light);
+    color: var(--blanco);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .card {
+        margin-bottom: 16px;
+    }
+    
+    .table-custom {
+        font-size: 0.9rem;
+    }
+}
+
+/* Print styles para ticket */
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+    
+    @page {
+        size: 80mm 40mm;
+        margin: 0;
+    }
+}
