@@ -3,8 +3,8 @@ USE papeleria_db;
 -- Insertar usuarios de prueba
 -- Password para ambos: "admin123" y "operador123"
 INSERT INTO usuarios (nombre, email, password, rol) VALUES
-('Admin Principal', 'admin@papeleria.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),
-('Juan Operador', 'operador@papeleria.com', '$2y$10$vKGZQGhqIJlVVRrVVEhCPOMd8zKXJYYZJ5L5qVZQVZQVZQVZQVZQVe', 'operador');
+('Admin Principal', 'admin@papeleria.com', '$2y$10$pBAyb8V.CMv1.ZiGqqcq0eiUf4ikEswZyTQWZTv.XJIv2gzbY7NzG', 'admin'), -- hashs regenerados
+('Juan Operador', 'operador@papeleria.com', '$2y$10$ROCsaULmbZjqF1rfpr8CZeic0uGOtOW5HCKMZYpShOz/FVhcV9/D2', 'operador');
 
 -- Insertar productos de prueba
 INSERT INTO productos (nombre, descripcion, precio_compra, precio_venta, codigo_barras) VALUES
