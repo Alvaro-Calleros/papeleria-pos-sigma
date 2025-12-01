@@ -1,6 +1,5 @@
 // Papelería Sigma - Productos Admin
 let currentPage = 1;
-let currentSearch = '';
 
 // Cargar productos al inicio
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,47 +22,50 @@ document.addEventListener('DOMContentLoaded', () => {
 // Cargar productos
 async function cargarProductos(page = 1) {
     try {
-        const search = document.getElementById('searchInput').value;
+        currentPage = page;
+        const search = document.getElementById('searchInput').value.trim();
         const activo = document.getElementById('filterActivo').value;
-        
-        // TODO: Implementar endpoint productos_list.php
-        // Por ahora, mostrar datos simulados
-        
-        const productosSimulados = [
-            {
-                id: 1,
-                nombre: 'Cuaderno profesional 100 hojas',
-                codigo_barras: '7501234567890',
-                precio_compra: 15.00,
-                precio_venta: 25.00,
-                stock: 50,
-                activo: 1,
-                imagen: null
-            },
-            {
-                id: 2,
-                nombre: 'Pluma azul BIC',
-                codigo_barras: '7501234567891',
-                precio_compra: 3.50,
-                precio_venta: 7.00,
-                stock: 100,
-                activo: 1,
-                imagen: null
-            },
-            {
-                id: 3,
-                nombre: 'Lápiz HB #2',
-                codigo_barras: '7501234567892',
-                precio_compra: 2.00,
-                precio_venta: 4.00,
-                stock: 150,
-                activo: 1,
-                imagen: null
-            }
-        ];
-        
-        renderProductos(productosSimulados);
-        
+
+        const params = new URLSearchParams();
+        params.append('page', page);
+        params.append('limit', 10);
+
+        if (search) {
+            params.append('search', search);
+        }
+
+        if (activo && activo !== 'todos') {
+            params.append('activo', activo);
+        }
+
+        const tbody = document.getElementById('productosBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" class="text-center py-5">
+                    <div class="spinner-custom"></div>
+                    <p class="text-muted">Cargando productos...</p>
+                </td>
+            </tr>
+        `;
+
+        const response = await fetch(`actions/productos_list.php?${params.toString()}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            showAlert(data.message || 'Error al cargar productos', 'danger');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-5">
+                        <p class="mt-2">No se pudieron cargar los productos</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        renderProductos(data.data || []);
+        renderPaginacion(data.pagination);
+
     } catch (error) {
         showAlert('Error al cargar productos', 'danger');
         console.error(error);
@@ -122,6 +124,42 @@ function renderProductos(productos) {
     tbody.innerHTML = html;
 }
 
+// Renderizar paginación
+function renderPaginacion(pagination) {
+    const paginationEl = document.getElementById('pagination');
+
+    if (!pagination || pagination.total_pages <= 1) {
+        paginationEl.innerHTML = '';
+        return;
+    }
+
+    const { page, total_pages } = pagination;
+    let html = '';
+
+    const createPageItem = (p, label, disabled = false, active = false) => {
+        const disabledClass = disabled ? ' disabled' : '';
+        const activeClass = active ? ' active' : '';
+        const onclick = !disabled ? `onclick="cargarProductos(${p}); return false;"` : 'tabindex="-1" aria-disabled="true"';
+        return `
+            <li class="page-item${disabledClass}${activeClass}">
+                <a class="page-link" href="#" ${onclick}>${label}</a>
+            </li>
+        `;
+    };
+
+    const prevPage = page - 1;
+    html += createPageItem(prevPage, '&laquo;', page <= 1, false);
+
+    for (let p = 1; p <= total_pages; p++) {
+        html += createPageItem(p, p, false, p === page);
+    }
+
+    const nextPage = page + 1;
+    html += createPageItem(nextPage, '&raquo;', page >= total_pages, false);
+
+    paginationEl.innerHTML = html;
+}
+
 // Buscar productos
 function buscarProductos() {
     cargarProductos(1);
@@ -148,18 +186,28 @@ async function guardarProducto() {
     const id = document.getElementById('productoId').value;
     
     try {
-        // TODO: Implementar endpoint productos_create.php o productos_update.php
-        console.log('Guardar producto:', Object.fromEntries(formData));
-        
-        showAlert(id ? 'Producto actualizado' : 'Producto creado exitosamente', 'success');
-        
+        const url = id ? 'actions/productos_update.php' : 'actions/productos_create.php';
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            showAlert(data.message || 'Error al guardar producto', 'danger');
+            return;
+        }
+
+        showAlert(data.message || (id ? 'Producto actualizado' : 'Producto creado exitosamente'), 'success');
+
         // Cerrar modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalProducto'));
         modal.hide();
-        
+
         // Recargar lista
         cargarProductos(currentPage);
-        
+
     } catch (error) {
         showAlert('Error al guardar producto', 'danger');
         console.error(error);
@@ -169,19 +217,16 @@ async function guardarProducto() {
 // Editar producto
 async function editarProducto(id) {
     try {
-        // TODO: Implementar endpoint para obtener producto por ID
-        console.log('Editar producto:', id);
-        
-        // Datos simulados
-        const producto = {
-            id: id,
-            nombre: 'Cuaderno profesional 100 hojas',
-            descripcion: 'Cuaderno rayado',
-            codigo_barras: '7501234567890',
-            precio_compra: 15.00,
-            precio_venta: 25.00
-        };
-        
+        const response = await fetch(`actions/productos_get.php?id=${id}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            showAlert(data.message || 'Error al cargar producto', 'danger');
+            return;
+        }
+
+        const producto = data.data;
+
         // Llenar form
         document.getElementById('productoId').value = producto.id;
         document.getElementById('nombre').value = producto.nombre;
@@ -189,9 +234,9 @@ async function editarProducto(id) {
         document.getElementById('codigo_barras').value = producto.codigo_barras;
         document.getElementById('precio_compra').value = producto.precio_compra;
         document.getElementById('precio_venta').value = producto.precio_venta;
-        
+
         document.getElementById('modalTitle').textContent = '✏️ Editar Producto';
-        
+
         // Abrir modal
         const modal = new bootstrap.Modal(document.getElementById('modalProducto'));
         modal.show();
@@ -209,12 +254,24 @@ async function eliminarProducto(id) {
     }
     
     try {
-        // TODO: Implementar endpoint productos_delete.php
-        console.log('Eliminar producto:', id);
-        
-        showAlert('Producto eliminado', 'success');
+        const formData = new FormData();
+        formData.append('id', id);
+
+        const response = await fetch('actions/productos_delete.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            showAlert(data.message || 'Error al eliminar producto', 'danger');
+            return;
+        }
+
+        showAlert(data.message || 'Producto eliminado', 'success');
         cargarProductos(currentPage);
-        
+
     } catch (error) {
         showAlert('Error al eliminar producto', 'danger');
         console.error(error);
