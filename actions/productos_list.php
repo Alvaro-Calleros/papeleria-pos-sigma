@@ -8,14 +8,21 @@ header('Content-Type: application/json');
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
 $search = isset($_GET['search']) ? $_GET['search'] : '';
+$activo = isset($_GET['activo']) ? $_GET['activo'] : '1';
 $offset = ($page - 1) * $limit;
 
 $conn = getConnection();
 
 try {
-    $where_clause = "WHERE p.activo = 1";
+    $where_clause = "WHERE 1=1";
     $params = [];
     $types = "";
+
+    if ($activo === '1') {
+        $where_clause .= " AND p.activo = 1";
+    } elseif ($activo === '0') {
+        $where_clause .= " AND p.activo = 0";
+    }
 
     if (!empty($search)) {
         $where_clause .= " AND (p.nombre LIKE ? OR p.codigo_barras LIKE ?)";
@@ -36,7 +43,7 @@ try {
     $stmt->close();
 
     // Obtener datos
-    $sql = "SELECT p.id, p.nombre, p.descripcion, p.precio_compra, p.precio_venta, p.codigo_barras, e.cantidad as stock 
+    $sql = "SELECT p.id, p.nombre, p.descripcion, p.precio_compra, p.precio_venta, p.codigo_barras, p.activo, e.cantidad as stock 
             FROM productos p 
             LEFT JOIN existencias e ON p.id = e.producto_id 
             $where_clause 

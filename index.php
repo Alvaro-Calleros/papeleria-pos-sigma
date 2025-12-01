@@ -13,7 +13,7 @@ require_once 'includes/auth_user.php';
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-custom navbar-dark">
+    <nav class="navbar navbar-custom navbar-light">
         <div class="container-fluid">
             <span class="navbar-brand">
                 <span class="logo-emoji">🌱</span>
@@ -21,8 +21,8 @@ require_once 'includes/auth_user.php';
             </span>
             <div class="d-flex align-items-center gap-3">
                 <?php if($_SESSION['rol'] === 'admin'): ?>
-                    <a href="productos.php" class="btn btn-sm btn-outline-light">Productos</a>
-                    <a href="reportes.php" class="btn btn-sm btn-outline-light">Reportes</a>
+                    <a href="productos.php" class="btn btn-sm btn-outline-dark">Productos</a>
+                    <a href="reportes.php" class="btn btn-sm btn-outline-dark">Reportes</a>
                 <?php endif; ?>
                 <span class="navbar-text">
                     <strong>Cajero:</strong> <?= htmlspecialchars($_SESSION['nombre']) ?>

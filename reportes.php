@@ -37,15 +37,15 @@ require_once 'includes/auth_admin.php';
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-custom navbar-dark no-print">
+    <nav class="navbar navbar-custom navbar-light no-print">
         <div class="container-fluid">
             <span class="navbar-brand">
                 <span class="logo-emoji">🌱</span>
                 Papelería Sigma - Reportes
             </span>
             <div class="d-flex align-items-center gap-3">
-                <a href="index.php" class="btn btn-sm btn-outline-light">POS</a>
-                <a href="productos.php" class="btn btn-sm btn-outline-light">Productos</a>
+                <a href="index.php" class="btn btn-sm btn-outline-dark">POS</a>
+                <a href="productos.php" class="btn btn-sm btn-outline-dark">Productos</a>
                 <span class="navbar-text">Admin: <?= htmlspecialchars($_SESSION['nombre']) ?></span>
                 <button class="btn btn-logout btn-sm" onclick="logout()">Salir</button>
             </div>
