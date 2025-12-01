@@ -18,7 +18,7 @@ $precio_compra = $_POST['precio_compra'] ?? 0;
 $precio_venta = $_POST['precio_venta'] ?? 0;
 $codigo_barras = $_POST['codigo_barras'] ?? '';
 
-if (!$id || empty($nombre) || empty($codigo_barras) || $precio_compra < 0 || $precio_venta < 0) {
+if (!$id || empty($nombre) || empty($codigo_barras) || $precio_compra <= 0 || $precio_venta <= 0) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Datos incompletos o inválidos']);
     exit();
