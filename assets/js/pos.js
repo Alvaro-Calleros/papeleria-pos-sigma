@@ -116,48 +116,67 @@ function actualizarTotales(totales) {
 
 // Cambiar cantidad (botones +/-)
 async function cambiarCantidad(index, cambio) {
-    // Simulación - en producción llamar endpoint para validar stock
-    if (carrito[index].cantidad + cambio <= 0) {
-        eliminarItem(index);
-        return;
+    try {
+        showLoading(true);
+
+        const formData = new FormData();
+        formData.append('index', index);
+        formData.append('cambio', cambio);
+
+        const response = await fetch('actions/ventas_update.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            carrito = data.carrito;
+            actualizarCarrito();
+            actualizarTotales(data.totales);
+        } else {
+            showAlert(data.message || 'No se pudo actualizar la cantidad', 'danger');
+            playSound('error');
+        }
+    } catch (error) {
+        showAlert('Error al actualizar la cantidad', 'danger');
+        console.error(error);
+    } finally {
+        showLoading(false);
+        focusInput();
     }
-    
-    carrito[index].cantidad += cambio;
-    
-    // Recalcular totales
-    let subtotal = 0;
-    carrito.forEach(item => {
-        subtotal += item.precio_unitario * item.cantidad;
-    });
-    
-    const iva = subtotal * 0.16;
-    const total = subtotal + iva;
-    
-    actualizarCarrito();
-    actualizarTotales({ subtotal, iva, total, items_count: carrito.reduce((sum, item) => sum + item.cantidad, 0) });
 }
 
 // Eliminar item del carrito
-function eliminarItem(index) {
-    carrito.splice(index, 1);
-    
-    if (carrito.length === 0) {
-        actualizarCarrito();
-        actualizarTotales({ subtotal: 0, iva: 0, total: 0, items_count: 0 });
-        return;
+async function eliminarItem(index) {
+    try {
+        showLoading(true);
+
+        const formData = new FormData();
+        formData.append('index', index);
+
+        const response = await fetch('actions/ventas_remove.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            carrito = data.carrito;
+            actualizarCarrito();
+            actualizarTotales(data.totales);
+        } else {
+            showAlert(data.message || 'No se pudo eliminar el producto', 'danger');
+            playSound('error');
+        }
+    } catch (error) {
+        showAlert('Error al eliminar producto', 'danger');
+        console.error(error);
+    } finally {
+        showLoading(false);
+        focusInput();
     }
-    
-    // Recalcular totales
-    let subtotal = 0;
-    carrito.forEach(item => {
-        subtotal += item.precio_unitario * item.cantidad;
-    });
-    
-    const iva = subtotal * 0.16;
-    const total = subtotal + iva;
-    
-    actualizarCarrito();
-    actualizarTotales({ subtotal, iva, total, items_count: carrito.reduce((sum, item) => sum + item.cantidad, 0) });
 }
 
 // Confirmar venta
@@ -215,14 +234,37 @@ async function confirmarVenta() {
 }
 
 // Limpiar carrito
-function limpiarCarrito() {
+async function limpiarCarrito() {
     if (carrito.length === 0) return;
     
-    if (confirm('¿Seguro que desea limpiar el carrito?')) {
-        carrito = [];
-        actualizarCarrito();
-        actualizarTotales({ subtotal: 0, iva: 0, total: 0, items_count: 0 });
-        showAlert('Carrito limpiado', 'info');
+    if (!confirm('¿Seguro que desea limpiar el carrito?')) {
+        return;
+    }
+
+    try {
+        showLoading(true);
+
+        const response = await fetch('actions/ventas_clear.php', {
+            method: 'POST'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            carrito = [];
+            actualizarCarrito();
+            actualizarTotales(data.totales);
+            showAlert('Carrito limpiado', 'info');
+        } else {
+            showAlert(data.message || 'No se pudo limpiar el carrito', 'danger');
+            playSound('error');
+        }
+    } catch (error) {
+        showAlert('Error al limpiar el carrito', 'danger');
+        console.error(error);
+    } finally {
+        showLoading(false);
+        focusInput();
     }
 }
 
