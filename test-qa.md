@@ -1,11 +1,13 @@
 # Guía de Testing - Endpoints del Líder
 
 ## Prerrequisitos
+
 1. XAMPP corriendo (Apache + MySQL)
 2. Base de datos creada con `schema.sql` y `seed.sql`
-3. Proyecto en `C:\xampp\htdocs\papeleria-pos`
+3. Proyecto en `C:\xampp\htdocs\papeleria-pos-sigma`
 
 ## Herramientas de Testing
+
 - **Navegador**: Para login y logout
 - **Postman/Thunder Client**: Para probar endpoints de venta
 - **Console del navegador**: Para ver respuestas JSON
@@ -15,19 +17,22 @@
 ## 1. Test Login
 
 ### Con navegador:
-1. Ir a `http://localhost/papeleria-pos/login.php`
+
+1. Ir a `http://localhost/papeleria-pos-sigma/login.php`
 2. Credenciales de prueba:
    - **Admin**: `admin@papeleria.com` / `admin123`
    - **Operador**: `operador@papeleria.com` / `operador123`
 3. Debe redirigir a `index.php`
 
 ### Con cURL:
+
 ```bash
-curl -X POST http://localhost/papeleria-pos/actions/login.php \
+curl -X POST http://localhost/papeleria-pos-sigma/actions/login.php \
   -d "email=operador@papeleria.com&password=operador123"
 ```
 
 **Respuesta esperada:**
+
 ```json
 {
   "success": true,
@@ -46,21 +51,24 @@ curl -X POST http://localhost/papeleria-pos/actions/login.php \
 **Primero haz login** (paso anterior).
 
 ### Con Postman/Thunder Client:
+
 ```
-POST http://localhost/papeleria-pos/actions/ventas_add.php
+POST http://localhost/papeleria-pos-sigma/actions/ventas_add.php
 Content-Type: application/x-www-form-urlencoded
 
 codigo_barras=7501234567890
 ```
 
 ### Con cURL (mantén la cookie de sesión):
+
 ```bash
-curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
+curl -X POST http://localhost/papeleria-pos-sigma/actions/ventas_add.php \
   -b cookies.txt -c cookies.txt \
   -d "codigo_barras=7501234567890"
 ```
 
 **Respuesta esperada (primera vez):**
+
 ```json
 {
   "success": true,
@@ -69,16 +77,16 @@ curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
     {
       "producto_id": 1,
       "nombre": "Cuaderno profesional 100 hojas",
-      "precio_unitario": 25.00,
+      "precio_unitario": 25.0,
       "cantidad": 1,
       "codigo_barras": "7501234567890"
     }
   ],
   "totales": {
     "items_count": 1,
-    "subtotal": 25.00,
-    "iva": 4.00,
-    "total": 29.00
+    "subtotal": 25.0,
+    "iva": 4.0,
+    "total": 29.0
   }
 }
 ```
@@ -86,14 +94,15 @@ curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
 **Repite la petición 2 veces más** para tener 3 cuadernos en carrito.
 
 ### Agregar más productos:
+
 ```bash
 # Pluma (código: 7501234567891)
-curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
+curl -X POST http://localhost/papeleria-pos-sigma/actions/ventas_add.php \
   -b cookies.txt -c cookies.txt \
   -d "codigo_barras=7501234567891"
 
 # Lápiz (código: 7501234567892)
-curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
+curl -X POST http://localhost/papeleria-pos-sigma/actions/ventas_add.php \
   -b cookies.txt -c cookies.txt \
   -d "codigo_barras=7501234567892"
 ```
@@ -105,18 +114,21 @@ curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
 **Asegúrate de tener productos en el carrito** (paso anterior).
 
 ### Con Postman/Thunder Client:
+
 ```
-POST http://localhost/papeleria-pos/actions/ventas_confirm.php
+POST http://localhost/papeleria-pos-sigma/actions/ventas_confirm.php
 Content-Type: application/x-www-form-urlencoded
 ```
 
 ### Con cURL:
+
 ```bash
-curl -X POST http://localhost/papeleria-pos/actions/ventas_confirm.php \
+curl -X POST http://localhost/papeleria-pos-sigma/actions/ventas_confirm.php \
   -b cookies.txt -c cookies.txt
 ```
 
 **Respuesta esperada:**
+
 ```json
 {
   "success": true,
@@ -124,7 +136,7 @@ curl -X POST http://localhost/papeleria-pos/actions/ventas_confirm.php \
   "data": {
     "folio": "V-00002",
     "venta_id": 2,
-    "subtotal": 86.00,
+    "subtotal": 86.0,
     "iva": 13.76,
     "total": 99.76
   }
@@ -132,18 +144,19 @@ curl -X POST http://localhost/papeleria-pos/actions/ventas_confirm.php \
 ```
 
 ### Verificar en BD:
+
 ```sql
 -- Ver la venta creada
 SELECT * FROM ventas WHERE folio = 'V-00002';
 
 -- Ver el detalle
-SELECT vd.*, p.nombre 
+SELECT vd.*, p.nombre
 FROM ventas_detalle vd
 INNER JOIN productos p ON vd.producto_id = p.id
 WHERE vd.venta_id = 2;
 
 -- Verificar que las existencias se redujeron
-SELECT p.nombre, e.cantidad 
+SELECT p.nombre, e.cantidad
 FROM productos p
 INNER JOIN existencias e ON p.id = e.producto_id
 WHERE p.id IN (1, 2, 3);
@@ -154,17 +167,20 @@ WHERE p.id IN (1, 2, 3);
 ## 4. Test Datos para Ticket
 
 ### Con GET:
+
 ```
-GET http://localhost/papeleria-pos/actions/print_ticket.php?venta_id=2
+GET http://localhost/papeleria-pos-sigma/actions/print_ticket.php?venta_id=2
 ```
 
 ### Con cURL:
+
 ```bash
-curl http://localhost/papeleria-pos/actions/print_ticket.php?venta_id=2 \
+curl http://localhost/papeleria-pos-sigma/actions/print_ticket.php?venta_id=2 \
   -b cookies.txt
 ```
 
 **Respuesta esperada:**
+
 ```json
 {
   "success": true,
@@ -173,7 +189,7 @@ curl http://localhost/papeleria-pos/actions/print_ticket.php?venta_id=2 \
       "id": 2,
       "folio": "V-00002",
       "cajero": "Juan Operador",
-      "subtotal": 86.00,
+      "subtotal": 86.0,
       "iva": 13.76,
       "total": 99.76,
       "fecha": "2024-11-26 15:30:00"
@@ -182,22 +198,22 @@ curl http://localhost/papeleria-pos/actions/print_ticket.php?venta_id=2 \
       {
         "producto_nombre": "Cuaderno profesional 100 hojas",
         "cantidad": 3,
-        "precio_unitario": 25.00,
-        "subtotal": 75.00,
+        "precio_unitario": 25.0,
+        "subtotal": 75.0,
         "codigo_barras": "7501234567890"
       },
       {
         "producto_nombre": "Pluma azul BIC",
         "cantidad": 1,
-        "precio_unitario": 7.00,
-        "subtotal": 7.00,
+        "precio_unitario": 7.0,
+        "subtotal": 7.0,
         "codigo_barras": "7501234567891"
       },
       {
         "producto_nombre": "Lápiz HB #2",
         "cantidad": 1,
-        "precio_unitario": 4.00,
-        "subtotal": 4.00,
+        "precio_unitario": 4.0,
+        "subtotal": 4.0,
         "codigo_barras": "7501234567892"
       }
     ]
@@ -210,20 +226,24 @@ curl http://localhost/papeleria-pos/actions/print_ticket.php?venta_id=2 \
 ## 5. Test Logout
 
 ### Con navegador:
+
 Desde cualquier página logueada, llamar a:
+
 ```javascript
-fetch('/papeleria-pos/actions/logout.php')
-  .then(r => r.json())
+fetch("/papeleria-pos/actions/logout.php")
+  .then((r) => r.json())
   .then(console.log);
 ```
 
 ### Con cURL:
+
 ```bash
-curl http://localhost/papeleria-pos/actions/logout.php \
+curl http://localhost/papeleria-pos-sigma/actions/logout.php \
   -b cookies.txt
 ```
 
 **Respuesta esperada:**
+
 ```json
 {
   "success": true,
@@ -236,16 +256,18 @@ curl http://localhost/papeleria-pos/actions/logout.php \
 ## Casos de Error a Probar
 
 ### Stock insuficiente:
+
 ```bash
 # Agregar 200 cuadernos (solo hay 50 en stock)
 for i in {1..200}; do
-  curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
+  curl -X POST http://localhost/papeleria-pos-sigma/actions/ventas_add.php \
     -b cookies.txt -c cookies.txt \
     -d "codigo_barras=7501234567890"
 done
 ```
 
 **Debe retornar error cuando llegues al límite:**
+
 ```json
 {
   "success": false,
@@ -255,14 +277,16 @@ done
 ```
 
 ### Venta sin carrito:
+
 ```bash
 # Hacer logout y login de nuevo (limpia sesión)
 # Luego intentar confirmar venta
-curl -X POST http://localhost/papeleria-pos/actions/ventas_confirm.php \
+curl -X POST http://localhost/papeleria-pos-sigma/actions/ventas_confirm.php \
   -b cookies.txt
 ```
 
 **Debe retornar:**
+
 ```json
 {
   "success": false,
@@ -271,13 +295,15 @@ curl -X POST http://localhost/papeleria-pos/actions/ventas_confirm.php \
 ```
 
 ### Producto inexistente:
+
 ```bash
-curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
+curl -X POST http://localhost/papeleria-pos-sigma/actions/ventas_add.php \
   -b cookies.txt -c cookies.txt \
   -d "codigo_barras=9999999999999"
 ```
 
 **Debe retornar:**
+
 ```json
 {
   "success": false,
@@ -308,17 +334,20 @@ curl -X POST http://localhost/papeleria-pos/actions/ventas_add.php \
 ## Comandos Útiles
 
 ### Ver folios generados:
+
 ```sql
 SELECT folio, total, fecha FROM ventas ORDER BY id DESC LIMIT 5;
 ```
 
 ### Resetear autoincrement de ventas:
+
 ```sql
 ALTER TABLE ventas AUTO_INCREMENT = 1;
 DELETE FROM ventas WHERE id > 1; -- Mantener solo venta de seed
 ```
 
 ### Ver carrito actual (desde PHP):
+
 ```php
 <?php
 session_start();

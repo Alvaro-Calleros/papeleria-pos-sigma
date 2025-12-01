@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'admin') {
     http_response_code(403);
     die(json_encode([
         'success' => false,
-        'message' => 'Acceso denegado. Requiere rol de administrador.'
+        'message' => 'Acceso denegado. Requiere rol de administrador. Rol actual: ' . ($_SESSION['rol'] ?? 'null') . ', UserID: ' . ($_SESSION['user_id'] ?? 'null')
     ]));
 }
 
