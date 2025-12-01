@@ -1,6 +1,6 @@
 <?php
-require_once '../includes/config.php';
-require_once '../includes/db.php';
+require_once 'includes/config.php';
+require_once 'includes/db.php';
 require_once 'includes/auth_user.php';
 
 $venta_id = $_GET['venta_id'] ?? null;
