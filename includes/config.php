@@ -1,4 +1,7 @@
 <?php
+// Configuración de errores
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Configuración de conexión a BD
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
