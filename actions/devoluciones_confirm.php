@@ -119,11 +119,11 @@ try {
         $stmt->execute();
         $stmt->close();
 
-        // Incrementar stock
-        $stmt = $conn->prepare("UPDATE existencias SET cantidad = cantidad + ? WHERE producto_id = ?");
-        $stmt->bind_param('ii', $item['cantidad'], $item['producto_id']);
-        $stmt->execute();
-        $stmt->close();
+        // Incrementar stock - MANEJADO POR TRIGGER
+        // $stmt = $conn->prepare("UPDATE existencias SET cantidad = cantidad + ? WHERE producto_id = ?");
+        // $stmt->bind_param('ii', $item['cantidad'], $item['producto_id']);
+        // $stmt->execute();
+        // $stmt->close();
     }
 
     $conn->commit();
