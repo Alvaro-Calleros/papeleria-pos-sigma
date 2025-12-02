@@ -212,45 +212,43 @@ function generarReporteCompras() {
     document.getElementById('infoRegistros').textContent = `${datos.length} compras registradas`;
 }
 
-// Exportar a CSV (via backend)
-async function exportarCSV() {
-    const tipo = document.getElementById('tipoReporte').value;
-    const fechaInicio = document.getElementById('fechaInicio').value;
-    const fechaFin = document.getElementById('fechaFin').value;
-
-    if (!fechaInicio || !fechaFin) {
-        showAlert('Seleccione rango de fechas', 'warning');
+// Exportar a CSV
+function exportarCSV() {
+    if (datosActuales.length === 0) {
+        showAlert('No hay datos para exportar', 'warning');
         return;
     }
-
-    try {
-        showAlert('Generando CSV...', 'success');
-        const params = new URLSearchParams({ tipo, fechaInicio, fechaFin });
-        const response = await fetch(`actions/export_csv.php?${params.toString()}`, {
-            method: 'GET'
+    
+    // TODO: Implementar endpoint export_csv.php
+    console.log('Exportar CSV:', datosActuales);
+    showAlert('Exportando CSV...', 'info');
+    
+    // Simular descarga (temporal)
+    const tipo = document.getElementById('tipoReporte').value;
+    const fecha = new Date().toISOString().split('T')[0];
+    const filename = `reporte_${tipo}_${fecha}.csv`;
+    
+    // Crear CSV manualmente
+    let csv = '\ufeff'; // BOM para UTF-8
+    const headers = Object.keys(datosActuales[0]);
+    csv += headers.join(',') + '\n';
+    
+    datosActuales.forEach(row => {
+        const values = headers.map(header => {
+            const val = row[header];
+            return typeof val === 'string' && val.includes(',') ? `"${val}"` : val;
         });
-
-        if (!response.ok) {
-            showAlert('No se pudo generar el CSV', 'danger');
-            return;
-        }
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const fecha = new Date().toISOString().split('T')[0];
-        a.download = `reporte_${tipo}_${fecha}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-
-        showAlert('CSV descargado', 'success');
-    } catch (error) {
-        console.error(error);
-        showAlert('Error al descargar CSV', 'danger');
-    }
+        csv += values.join(',') + '\n';
+    });
+    
+    // Descargar
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    
+    showAlert(`Archivo ${filename} descargado`, 'success');
 }
 
 // Mostrar alertas

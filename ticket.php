@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/config.php';
+require_once 'includes/db.php';
 require_once 'includes/auth_user.php';
 
 $venta_id = $_GET['venta_id'] ?? null;
@@ -8,25 +9,22 @@ if (!$venta_id) {
     die('ID de venta no especificado');
 }
 
-// Obtener datos reales desde el endpoint print_ticket.php
-$venta = null;
-$detalle = [];
+// TODO: Obtener datos reales con print_ticket.php
+// Por ahora, datos simulados
+$venta = [
+    'folio' => 'V-00001',
+    'cajero' => $_SESSION['nombre'],
+    'fecha' => date('d/m/Y H:i'),
+    'subtotal' => 86.21,
+    'iva' => 13.79,
+    'total' => 100.00
+];
 
-try {
-    $url = 'actions/print_ticket.php?venta_id=' . urlencode($venta_id);
-    $json = @file_get_contents($url);
-    if ($json === false) {
-        throw new Exception('No se pudo obtener el ticket');
-    }
-    $resp = json_decode($json, true);
-    if (!$resp || empty($resp['success'])) {
-        throw new Exception($resp['message'] ?? 'Respuesta inválida del servidor');
-    }
-    $venta = $resp['data']['venta'];
-    $detalle = $resp['data']['detalle'] ?? [];
-} catch (Exception $e) {
-    die('Error: ' . htmlspecialchars($e->getMessage()));
-}
+$detalle = [
+    ['producto_nombre' => 'Cuaderno prof 100h', 'cantidad' => 2, 'precio_unitario' => 25.00, 'subtotal' => 50.00],
+    ['producto_nombre' => 'Pluma azul BIC', 'cantidad' => 3, 'precio_unitario' => 7.00, 'subtotal' => 21.00],
+    ['producto_nombre' => 'Borrador blanco', 'cantidad' => 3, 'precio_unitario' => 5.00, 'subtotal' => 15.00]
+];
 ?>
 <!DOCTYPE html>
 <html lang="es">
