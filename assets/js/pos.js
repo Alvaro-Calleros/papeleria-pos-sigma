@@ -61,6 +61,25 @@ async function agregarProducto() {
             console.table(data.carrito); // Muestra tabla bonita en consola
             console.log('Carrito actualizado:', data.carrito);
             
+            // WORKAROUND: Fusionar duplicados del backend (temporal hasta que arreglen backend)
+            const carritoLimpio = fusionarDuplicados(data.carrito);
+            if (carritoLimpio.length !== data.carrito.length) {
+                console.warn('⚠️ Se detectaron y fusionaron productos duplicados del backend');
+                data.carrito = carritoLimpio;
+                
+                // Recalcular totales
+                let subtotal = 0;
+                let items_count = 0;
+                data.carrito.forEach(item => {
+                    subtotal += parseFloat(item.precio_unitario) * parseInt(item.cantidad);
+                    items_count += parseInt(item.cantidad);
+                });
+                data.totales.subtotal = subtotal;
+                data.totales.iva = subtotal * 0.16;
+                data.totales.total = subtotal + data.totales.iva;
+                data.totales.items_count = items_count;
+            }
+            
             renderCarrito(data);
             input.value = '';
             showAlert('✓ Producto agregado al carrito', 'success');
@@ -331,6 +350,32 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// WORKAROUND: Fusionar productos duplicados (temporal hasta que backend se arregle)
+function fusionarDuplicados(carrito) {
+    const mapa = new Map();
+    
+    carrito.forEach(item => {
+        const id = item.producto_id;
+        if (mapa.has(id)) {
+            // Producto ya existe, sumar cantidades
+            const existente = mapa.get(id);
+            existente.cantidad += parseInt(item.cantidad);
+        } else {
+            // Producto nuevo, agregarlo
+            mapa.set(id, {
+                producto_id: item.producto_id,
+                nombre: item.nombre,
+                precio_unitario: item.precio_unitario,
+                cantidad: parseInt(item.cantidad),
+                codigo_barras: item.codigo_barras
+            });
+        }
+    });
+    
+    // Convertir Map a Array
+    return Array.from(mapa.values());
 }
 
 function showAlert(message, type) {
