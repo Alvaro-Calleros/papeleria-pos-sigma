@@ -1,5 +1,8 @@
 // Papelería Sigma - POS Logic
 
+// Variable global para controlar requests en progreso
+let requestEnProgreso = false;
+
 document.addEventListener('DOMContentLoaded', () => {
     actualizarCarrito();
     actualizarStats();
@@ -30,6 +33,14 @@ async function agregarProducto() {
     
     if (!codigo) return;
     
+    // PROTECCIÓN: Evitar doble submit
+    if (requestEnProgreso) {
+        console.warn('⚠️ Hay una petición en progreso, esperando...');
+        return;
+    }
+    
+    console.log('Agregando producto con código:', codigo);
+    requestEnProgreso = true;
     input.disabled = true;
     
     try {
@@ -42,20 +53,29 @@ async function agregarProducto() {
         });
         
         const data = await response.json();
+        console.log('Respuesta de ventas_add:', data);
         
         if (data.success) {
+            // LOG DETALLADO: Ver qué viene del backend
+            console.log('=== CARRITO RECIBIDO DEL BACKEND ===');
+            console.table(data.carrito); // Muestra tabla bonita en consola
+            console.log('Carrito actualizado:', data.carrito);
+            
             renderCarrito(data);
             input.value = '';
-            showAlert('Producto agregado', 'success');
+            showAlert('✓ Producto agregado al carrito', 'success');
         } else {
-            showAlert(data.message, 'danger');
-            // Reproducir sonido de error si es posible
+            showAlert(data.message || 'No se pudo agregar el producto', 'danger');
         }
         
     } catch (error) {
-        console.error(error);
-        showAlert('Error de conexión', 'danger');
+        console.error('Error en agregarProducto:', error);
+        showAlert('Error de conexión con el servidor', 'danger');
     } finally {
+        // Esperar 300ms antes de permitir otra petición
+        setTimeout(() => {
+            requestEnProgreso = false;
+        }, 300);
         input.disabled = false;
         input.focus();
     }
@@ -78,8 +98,22 @@ async function actualizarCarrito() {
 // Renderizar tabla y totales
 function renderCarrito(data) {
     const tbody = document.getElementById('carritoBody');
-    const carrito = data.carrito || [];
+    
+    // VALIDACIÓN: Verificar que data tenga la estructura correcta
+    if (!data || typeof data !== 'object') {
+        console.error('Error: data inválida en renderCarrito', data);
+        return;
+    }
+    
+    const carrito = Array.isArray(data.carrito) ? data.carrito : [];
     const totales = data.totales || { items_count: 0, subtotal: 0, iva: 0, total: 0 };
+    
+    // Log para debugging (quitar en producción)
+    console.log('Renderizando carrito:', { 
+        productos: carrito.length, 
+        items_totales: totales.items_count,
+        total: totales.total 
+    });
     
     // Actualizar badges y totales
     document.getElementById('itemsCount').textContent = `${totales.items_count} items`;
@@ -106,21 +140,33 @@ function renderCarrito(data) {
     
     let html = '';
     carrito.forEach((item, index) => {
+        // VALIDACIÓN: Verificar que cada item tenga los campos necesarios
+        if (!item.producto_id || !item.nombre || !item.precio_unitario || !item.cantidad) {
+            console.error('❌ Item inválido en carrito:', item);
+            return; // Skip este item
+        }
+        
+        // Log detallado de cada producto
+        console.log(`  [${index}] ${item.nombre} x${item.cantidad} = $${(item.precio_unitario * item.cantidad).toFixed(2)}`);
+        
+        // Calcular subtotal del item
+        const subtotalItem = parseFloat(item.precio_unitario) * parseInt(item.cantidad);
+        
         html += `
             <tr class="fade-in-up">
                 <td>
-                    <div class="fw-bold">${item.nombre}</div>
+                    <div class="fw-bold">${escapeHtml(item.nombre)}</div>
                 </td>
-                <td><small class="text-muted">${item.codigo_barras}</small></td>
+                <td><small class="text-muted">${escapeHtml(item.codigo_barras)}</small></td>
                 <td class="text-end">${formatMoney(item.precio_unitario)}</td>
                 <td class="text-center">
                     <div class="btn-group btn-group-sm">
                         <button class="btn btn-outline-secondary" onclick="cambiarCantidad(${index}, -1)">-</button>
-                        <span class="btn btn-light disabled" style="width: 40px; color: #000;">${item.cantidad}</span>
+                        <span class="btn btn-light disabled" style="width: 50px; color: #000; font-weight: bold;">${item.cantidad}</span>
                         <button class="btn btn-outline-secondary" onclick="cambiarCantidad(${index}, 1)">+</button>
                     </div>
                 </td>
-                <td class="text-end fw-bold">${formatMoney(item.precio_unitario * item.cantidad)}</td>
+                <td class="text-end fw-bold">${formatMoney(subtotalItem)}</td>
                 <td class="text-center">
                     <button class="btn btn-sm btn-outline-danger border-0" onclick="eliminarItem(${index})" title="Eliminar">
                         🗑️
@@ -135,6 +181,8 @@ function renderCarrito(data) {
 
 // Cambiar cantidad (+/-)
 async function cambiarCantidad(index, delta) {
+    console.log('Cambiando cantidad:', { index, delta });
+    
     try {
         const formData = new FormData();
         formData.append('index', index);
@@ -146,19 +194,29 @@ async function cambiarCantidad(index, delta) {
         });
         
         const data = await response.json();
+        console.log('Respuesta de ventas_update:', data);
         
         if (data.success) {
             renderCarrito(data);
+            // Mostrar feedback sutil sin molestar
+            if (delta > 0) {
+                console.log('✓ Cantidad incrementada');
+            } else {
+                console.log('✓ Cantidad decrementada');
+            }
         } else {
-            showAlert(data.message, 'warning');
+            showAlert(data.message || 'No se pudo actualizar la cantidad', 'warning');
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error en cambiarCantidad:', error);
+        showAlert('Error de conexión al actualizar cantidad', 'danger');
     }
 }
 
 // Eliminar item
 async function eliminarItem(index) {
+    console.log('Eliminando item con index:', index);
+    
     try {
         const formData = new FormData();
         formData.append('index', index);
@@ -169,12 +227,17 @@ async function eliminarItem(index) {
         });
         
         const data = await response.json();
+        console.log('Respuesta de ventas_remove:', data);
         
         if (data.success) {
             renderCarrito(data);
+            showAlert('Producto eliminado del carrito', 'info');
+        } else {
+            showAlert(data.message || 'No se pudo eliminar el producto', 'danger');
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error en eliminarItem:', error);
+        showAlert('Error de conexión al eliminar producto', 'danger');
     }
 }
 
@@ -254,7 +317,20 @@ async function actualizarStats() {
 
 // Helpers
 function formatMoney(amount) {
-    return '$' + parseFloat(amount).toFixed(2);
+    const num = parseFloat(amount);
+    // Validar que sea un número válido
+    if (isNaN(num)) {
+        console.warn('formatMoney recibió valor inválido:', amount);
+        return '$0.00';
+    }
+    return '$' + num.toFixed(2);
+}
+
+// Escapar HTML para prevenir XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 function showAlert(message, type) {
