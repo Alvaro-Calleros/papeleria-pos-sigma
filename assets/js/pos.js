@@ -56,8 +56,9 @@ async function agregarProducto() {
         console.log('Respuesta de ventas_add:', data);
         
         if (data.success) {
-            // IMPORTANTE: Guardar una copia del carrito anterior para comparar
-            const carritoAnterior = JSON.stringify(data.carrito);
+            // LOG DETALLADO: Ver qué viene del backend
+            console.log('=== CARRITO RECIBIDO DEL BACKEND ===');
+            console.table(data.carrito); // Muestra tabla bonita en consola
             console.log('Carrito actualizado:', data.carrito);
             
             renderCarrito(data);
