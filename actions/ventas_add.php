@@ -73,6 +73,7 @@ foreach ($_SESSION['carrito'] as &$item) {
         break;
     }
 }
+unset($item); // Romper la referencia para evitar bugs en el siguiente foreach
 
 // Si no está en el carrito, agregarlo
 if (!$encontrado) {

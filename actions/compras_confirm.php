@@ -82,12 +82,6 @@ try {
         $stmt->close();
 
         // Actualizar stock (incrementar) - MANEJADO POR TRIGGER
-        // También podríamos actualizar el precio_compra del producto con el nuevo precio, pero eso es política de negocio.
-        // Por ahora solo actualizamos stock.
-        // $stmt = $conn->prepare("UPDATE existencias SET cantidad = cantidad + ? WHERE producto_id = ?");
-        // $stmt->bind_param('ii', $item['cantidad'], $item['producto_id']);
-        // $stmt->execute();
-        // $stmt->close();
         
         // Opcional: Actualizar precio de compra en tabla productos si cambió
         $stmt = $conn->prepare("UPDATE productos SET precio_compra = ? WHERE id = ?");
