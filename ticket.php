@@ -8,23 +8,54 @@ $venta_id = $_GET['venta_id'] ?? null;
 if (!$venta_id) {
     die('ID de venta no especificado');
 }
+// Obtener datos reales desde la base de datos (misma lógica que actions/print_ticket.php)
+$conn = getConnection();
 
-// TODO: Obtener datos reales con print_ticket.php
-// Por ahora, datos simulados
-$venta = [
-    'folio' => 'V-00001',
-    'cajero' => $_SESSION['nombre'],
-    'fecha' => date('d/m/Y H:i'),
-    'subtotal' => 86.21,
-    'iva' => 13.79,
-    'total' => 100.00
-];
+// Obtener datos de la venta
+$stmt = $conn->prepare("SELECT v.id, v.folio, u.nombre as cajero, v.subtotal, v.iva, v.total, v.fecha 
+                        FROM ventas v 
+                        INNER JOIN usuarios u ON v.usuario_id = u.id 
+                        WHERE v.id = ?");
+$stmt->bind_param('i', $venta_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$detalle = [
-    ['producto_nombre' => 'Cuaderno prof 100h', 'cantidad' => 2, 'precio_unitario' => 25.00, 'subtotal' => 50.00],
-    ['producto_nombre' => 'Pluma azul BIC', 'cantidad' => 3, 'precio_unitario' => 7.00, 'subtotal' => 21.00],
-    ['producto_nombre' => 'Borrador blanco', 'cantidad' => 3, 'precio_unitario' => 5.00, 'subtotal' => 15.00]
-];
+if ($result->num_rows === 0) {
+    $stmt->close();
+    closeConnection($conn);
+    die('Venta no encontrada');
+}
+
+$venta = $result->fetch_assoc();
+$stmt->close();
+
+// Obtener detalles de la venta
+$stmt = $conn->prepare("SELECT p.nombre as producto_nombre, vd.cantidad, vd.precio_unitario, vd.subtotal, p.codigo_barras 
+                        FROM ventas_detalle vd 
+                        INNER JOIN productos p ON vd.producto_id = p.id 
+                        WHERE vd.venta_id = ?");
+$stmt->bind_param('i', $venta_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$detalle = [];
+while ($row = $result->fetch_assoc()) {
+    $detalle[] = [
+        'producto_nombre' => $row['producto_nombre'],
+        'cantidad' => (int)$row['cantidad'],
+        'precio_unitario' => (float)$row['precio_unitario'],
+        'subtotal' => (float)$row['subtotal'],
+        'codigo_barras' => $row['codigo_barras']
+    ];
+}
+$stmt->close();
+
+// Formatear montos como floats
+$venta['subtotal'] = (float)$venta['subtotal'];
+$venta['iva'] = (float)$venta['iva'];
+$venta['total'] = (float)$venta['total'];
+
+closeConnection($conn);
 ?>
 <!DOCTYPE html>
 <html lang="es">
