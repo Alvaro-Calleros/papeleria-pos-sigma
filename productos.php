@@ -23,7 +23,9 @@ require_once 'includes/auth_admin.php';
                 <a href="index.php" class="btn btn-sm btn-outline-dark">POS</a>
                 <a href="reportes.php" class="btn btn-sm btn-outline-dark">Reportes</a>
                 <span class="navbar-text">Admin: <?= htmlspecialchars($_SESSION['nombre']) ?></span>
-                <button class="btn btn-logout btn-sm" onclick="logout()">Salir</button>
+                <button class="btn btn-logout btn-sm" onclick="logout()">
+                    Cerrar Sesión
+                </button>
             </div>
         </div>
     </nav>

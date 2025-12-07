@@ -47,7 +47,9 @@ require_once 'includes/auth_admin.php';
                 <a href="index.php" class="btn btn-sm btn-outline-dark">POS</a>
                 <a href="productos.php" class="btn btn-sm btn-outline-dark">Productos</a>
                 <span class="navbar-text">Admin: <?= htmlspecialchars($_SESSION['nombre']) ?></span>
-                <button class="btn btn-logout btn-sm" onclick="logout()">Salir</button>
+                <button class="btn btn-logout btn-sm" onclick="logout()">
+                    Cerrar Sesión
+                </button>
             </div>
         </div>
     </nav>
@@ -182,6 +184,14 @@ require_once 'includes/auth_admin.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function logout() {
+            if (confirm('¿Cerrar sesión?')) {
+                fetch('actions/logout.php')
+                    .then(() => window.location.href = 'login.php');
+            }
+        }
+    </script>
     <script src="assets/js/reportes.js"></script>
 </body>
 </html>
