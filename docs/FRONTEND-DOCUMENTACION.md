@@ -154,7 +154,8 @@ index.php (POS - Punto de Venta)
 - Filtro por estado (Todos/Activos/Inactivos)
 - Paginación (10 productos por página)
 
-#### Modal de Creación/Edición:
+#### Modal de Creación (Nuevo Producto):
+- Botón "➕ Nuevo Producto" en header
 - Formulario con:
   - Nombre del producto
   - Código de barras (único)
@@ -164,17 +165,29 @@ index.php (POS - Punto de Venta)
   - Upload de imagen (JPG/PNG, máx 5MB)
   - Preview de imagen en tiempo real
 
+#### Modal de Edición (Editar Producto):
+- Botón "✏️ Editar" en cada fila de la tabla
+- Modal exclusivo para edición con:
+  - Todos los campos del producto precargados
+  - Título "✏️ Editar Producto"
+  - Gradiente verde oscuro en header
+  - Preview de imagen si existe
+  - Botón "Guardar cambios"
+
 **Funcionalidades JavaScript (`productos.js`):**
 
 ```javascript
 // Funciones principales
-- cargarProductos(page)    // Carga lista paginada desde BD
-- renderProductos()        // Renderiza tabla
-- renderPaginacion()       // Renderiza controles de paginación
-- buscarProductos()        // Aplica búsqueda y filtros
-- guardarProducto()        // Crea o actualiza producto
-- editarProducto(id)       // Carga datos en modal para edición
-- eliminarProducto(id)     // Soft delete (activo = 0)
+- cargarProductos(page)           // Carga lista paginada desde BD
+- renderProductos()               // Renderiza tabla
+- renderPaginacion()              // Renderiza controles de paginación
+- buscarProductos()               // Aplica búsqueda y filtros
+- guardarProducto()               // Crea nuevo producto (modal alta)
+- guardarProductoEdit()           // Actualiza producto existente (modal edición)
+- guardarProductoDesdeFormulario() // Helper compartido para guardar (crear/editar)
+- editarProducto(id)              // Carga datos y abre modal de edición
+- eliminarProducto(id)            // Soft delete (activo = 0)
+- setupImagePreview()             // Configura preview de imagen para ambos modales
 ```
 
 **Endpoints Conectados:**
@@ -201,54 +214,62 @@ index.php (POS - Punto de Venta)
 #### Filtros:
 - Tipo de reporte:
   - Ventas
-  - Productos más vendidos
-  - Inventario
-  - Compras (en construcción)
+  - Devoluciones
 - Rango de fechas (inicio - fin)
 
 #### Tabla de Resultados:
 - Headers dinámicos según tipo de reporte
 - Datos cargados desde BD
-- Resumen estadístico (cards superiores):
-  - Total de ventas
-  - Ingresos totales
-  - Productos vendidos
-  - Stock total
+- Columnas ventas: Folio, Fecha, Cajero, Subtotal, IVA, Total, Acciones
+- Columnas devoluciones: Folio, Fecha, Usuario, Total devuelto, Acciones
+- **Dropdown 3 puntos (⋮)** en cada fila con acciones:
+  - 📄 Ver detalle → Abre modal con productos del movimiento
+  - 🔙 Registrar devolución (solo ventas) → Abre modal para devolver productos
+- **Modales implementados:**
+  - Modal Detalle Venta: Muestra productos, cantidades, precios de una venta
+  - Modal Detalle Devolución: Muestra productos, cantidades de una devolución
+  - Modal Registrar Devolución: Permite seleccionar productos y cantidades a devolver
 
 #### Acciones:
 - **Exportar CSV:** Descarga archivo CSV con datos
-- **Imprimir:** Vista optimizada para impresión A4
+- **Imprimir:** Vista optimizada para impresión A4 (pendiente mejoras)
 
 **Funcionalidades JavaScript (`reportes.js`):**
 
 ```javascript
 // Funciones principales
-- generarReporte()              // Genera reporte según tipo y fechas
-- generarReporteVentas()        // Consulta ventas en rango
-- generarReporteMasVendidos()   // Top productos vendidos
-- generarReporteInventario()    // Estado actual de inventario
-- exportarCSV()                 // Descarga datos en formato CSV
+- generarReporte()                    // Genera reporte según tipo y fechas
+- generarReporteVentas()              // Consulta ventas en rango
+- generarReporteDevoluciones()        // Consulta devoluciones en rango
+- renderTablaVentas(data)             // Renderiza tabla con dropdown de acciones
+- renderTablaDevoluciones(data)       // Renderiza tabla de devoluciones
+- abrirModalDetalleVenta(ventaId)     // Abre modal con detalle de venta
+- abrirModalDetalleDevolucion(devId)  // Abre modal con detalle de devolución
+- abrirModalDevolucion(ventaId)       // Abre modal para registrar devolución
+- confirmarDevolucion()               // Envía devolución al backend
+- exportarCSV()                       // Descarga datos en formato CSV
 ```
 
 **Endpoints Conectados:**
 - `GET actions/reportes_get.php?action=ventas_rango&start=X&end=Y`
-- `GET actions/reportes_get.php?action=mas_vendidos`
-- `GET actions/reportes_get.php?action=inventario`
+- `GET actions/reportes_get.php?action=devoluciones_rango&start=X&end=Y`
 - `GET actions/export_csv.php?tipo=X&fechaInicio=Y&fechaFin=Z` - Exportar CSV
+- **Endpoints esperados (backend pendiente):**
+  - `GET actions/reportes_detalle_venta.php?venta_id=X` - Detalle de venta
+  - `GET actions/reportes_detalle_devolucion.php?devolucion_id=X` - Detalle de devolución
+  - `POST actions/devoluciones_confirm.php` - Confirmar devolución
 
 **Tipos de Reportes:**
 
 1. **Ventas:**
-   - Folio, Fecha, Cajero, Total
+   - Folio, Fecha, Cajero, Subtotal, IVA, Total
    - Rango de fechas obligatorio
+   - Acciones: Ver detalle, Registrar devolución
    
-2. **Productos Más Vendidos:**
-   - Nombre, Código, Cantidad vendida, Ingresos generados
-   - Ordenado por cantidad descendente
-   
-3. **Inventario:**
-   - ID, Nombre, Código, Stock, Precio, Valor total
-   - Alerta de stock bajo (< 10 unidades)
+2. **Devoluciones:**
+   - Folio devolución, Fecha, Usuario, Total devuelto
+   - Rango de fechas obligatorio
+   - Acciones: Ver detalle
 
 ---
 
@@ -437,11 +458,14 @@ ticket.php    → require 'auth_user.php'
 | `actions/productos_delete.php`| POST   | Soft delete              |
 
 #### Reportes:
-| Endpoint                     | Método | Descripción              |
-|------------------------------|--------|--------------------------|
-| `actions/reportes_get.php`   | GET    | Generar reporte          |
-| `actions/export_csv.php`     | GET    | Exportar CSV             |
-| `actions/print_ticket.php`   | GET    | Datos para ticket        |
+| Endpoint                               | Método | Descripción                      |
+|----------------------------------------|--------|----------------------------------|
+| `actions/reportes_get.php`             | GET    | Generar reporte ventas/devoluc.  |
+| `actions/reportes_detalle_venta.php`   | GET    | Detalle de venta (pendiente)     |
+| `actions/reportes_detalle_devolucion.php`| GET  | Detalle de devolución (pendiente)|
+| `actions/devoluciones_confirm.php`     | POST   | Confirmar devolución (pendiente) |
+| `actions/export_csv.php`               | GET    | Exportar CSV                     |
+| `actions/print_ticket.php`             | GET    | Datos para ticket                |
 
 ---
 
@@ -516,7 +540,8 @@ ticket.php    → require 'auth_user.php'
 
 ### 8.1 Funcionalidades Pendientes
 - [ ] Módulo de compras (ingresar stock)
-- [ ] Módulo de devoluciones
+- [x] Módulo de devoluciones (UI completo, backend pendiente)
+- [x] Reportes de ventas y devoluciones con acciones
 - [ ] Historial de ventas con búsqueda avanzada
 - [ ] Dashboard con gráficas (Chart.js)
 - [ ] Modo oscuro (dark mode)
