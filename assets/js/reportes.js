@@ -80,7 +80,15 @@ async function generarReporteVentas(start, end) {
                     <td>${venta.cajero}</td>
                     <td class="text-end"><strong>${formatMoney(venta.total)}</strong></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-info" onclick="verDetalleVenta('${venta.folio}')">👁️</button>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="dropdown">
+                                ⋮
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="abrirModalDevolucion('${venta.folio}', ${venta.total}); return false;">🔄 Devolución</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="verDetallesVenta('${venta.folio}'); return false;">📄 Ver Detalles</a></li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
             `;
@@ -229,4 +237,61 @@ function showAlert(message, type) {
     alertContainer.appendChild(alert);
     
     setTimeout(() => alert.remove(), 3000);
+}
+
+// Abrir modal de devolución
+function abrirModalDevolucion(folio, total) {
+    document.getElementById('devFolio').value = folio;
+    document.getElementById('devFolioDisplay').textContent = folio;
+    document.getElementById('devTotalDisplay').textContent = formatMoney(total);
+    document.getElementById('devDetalleBody').innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>';
+    cargarDetalleVenta(folio);
+    
+    const modal = new bootstrap.Modal(document.getElementById('modalDevolucion'));
+    modal.show();
+}
+
+// Confirmar devolución (frontend only - needs backend)
+function confirmarDevolucion() {
+    const folio = document.getElementById('devFolio').value;
+    
+    // TODO: Backend call needed
+    console.log('Devolución a procesar (se requiere backend):', { folio });
+    showAlert('⚠️ Backend pendiente: La devolución no se puede procesar aún', 'warning');
+    
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalDevolucion'));
+    modal.hide();
+}
+
+// Ver detalles de venta (placeholder)
+function verDetallesVenta(folio) {
+    showAlert('Ver detalles: funcionalidad pendiente', 'info');
+    console.log('Ver detalles de venta:', folio);
+}
+
+// Cargar detalle de venta para mostrar en el modal (requiere backend que acepte folio)
+async function cargarDetalleVenta(folio) {
+    const tbody = document.getElementById('devDetalleBody');
+    try {
+        const resp = await fetch(`actions/reportes_get.php?action=detalle_venta&folio=${folio}`);
+        const res = await resp.json();
+        if (!res.success) throw new Error(res.message || 'Sin respuesta');
+        const detalles = res.data || [];
+        if (!detalles.length) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin detalle recibido (backend pendiente)</td></tr>';
+            return;
+        }
+        tbody.innerHTML = detalles.map(item => `
+            <tr>
+                <td>${item.nombre || 'Producto'}</td>
+                <td class="text-center">${item.cantidad}</td>
+                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
+                <td class="text-end">${formatMoney(item.subtotal)}</td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Error al cargar detalle de venta', err);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el detalle (backend pendiente)</td></tr>';
+    }
 }
