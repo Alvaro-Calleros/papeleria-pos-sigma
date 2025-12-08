@@ -246,42 +246,6 @@ require_once 'includes/auth_admin.php';
         </div>
     </div>
 
-    <!-- Modal Detalle de Venta -->
-    <div class="modal fade" id="modalDetalleVenta" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">📄 Detalle de Venta</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-2"><strong>Folio venta:</strong> <span id="detVentaFolio">-</span></div>
-                    <div class="mb-2"><strong>Cajero:</strong> <span id="detVentaCajero">-</span></div>
-                    <div class="mb-2"><strong>Fecha:</strong> <span id="detVentaFecha">-</span></div>
-                    <div class="mb-3"><strong>Total venta:</strong> <span id="detVentaTotal">-</span></div>
-                    <div class="table-responsive border rounded">
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th class="text-center">Cant.</th>
-                                    <th class="text-end">Precio</th>
-                                    <th class="text-end">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody id="detVentaBody">
-                                <tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Detalle de Devolución -->
     <div class="modal fade" id="modalDetalleDevolucion" tabindex="-1">
         <div class="modal-dialog modal-lg">
