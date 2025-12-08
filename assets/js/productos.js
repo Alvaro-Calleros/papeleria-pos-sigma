@@ -4,20 +4,36 @@ let currentPage = 1;
 // Cargar productos al inicio
 document.addEventListener('DOMContentLoaded', () => {
     cargarProductos();
-    
-    // Preview de imagen
-    document.getElementById('imagen').addEventListener('change', (e) => {
+
+    // Preview de imagen (altas y edición)
+    setupImagePreview('imagen', 'imagePreview', 'previewContainer');
+    setupImagePreview('imagenEdit', 'imagePreviewEdit', 'previewContainerEdit');
+});
+
+function setupImagePreview(inputId, previewId, containerId) {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    const container = document.getElementById(containerId);
+
+    if (!input || !preview || !container) {
+        return;
+    }
+
+    input.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('imagePreview').src = e.target.result;
-                document.getElementById('previewContainer').style.display = 'block';
+            reader.onload = (event) => {
+                preview.src = event.target.result;
+                container.style.display = 'block';
             };
             reader.readAsDataURL(file);
+        } else {
+            container.style.display = 'none';
+            preview.src = '';
         }
     });
-});
+}
 
 // Cargar productos
 async function cargarProductos(page = 1) {
@@ -173,18 +189,42 @@ function nuevoProducto() {
     document.getElementById('previewContainer').style.display = 'none';
 }
 
-// Guardar producto
+// Guardar nuevo producto (modal de alta)
 async function guardarProducto() {
     const form = document.getElementById('formProducto');
-    
-    if (!form.checkValidity()) {
-        form.reportValidity();
+    await guardarProductoDesdeFormulario(form, {
+        closeModalId: 'modalProducto',
+        previewContainerId: 'previewContainer'
+    });
+}
+
+// Guardar producto editado (modal de edición)
+async function guardarProductoEdit() {
+    const form = document.getElementById('formEditarProducto');
+    const id = document.getElementById('productoIdEdit').value;
+
+    if (!id) {
+        showAlert('Selecciona un producto para editar', 'danger');
         return;
     }
-    
+
+    await guardarProductoDesdeFormulario(form, {
+        closeModalId: 'modalEditarProducto',
+        previewContainerId: 'previewContainerEdit'
+    });
+}
+
+async function guardarProductoDesdeFormulario(form, options = {}) {
+    const { closeModalId = null, previewContainerId = null } = options;
+
+    if (!form || !form.checkValidity()) {
+        form?.reportValidity();
+        return;
+    }
+
     const formData = new FormData(form);
-    const id = document.getElementById('productoId').value;
-    
+    const id = form.querySelector('input[name="id"]').value;
+
     try {
         const url = id ? 'actions/productos_update.php' : 'actions/productos_create.php';
         const response = await fetch(url, {
@@ -201,11 +241,19 @@ async function guardarProducto() {
 
         showAlert(data.message || (id ? 'Producto actualizado' : 'Producto creado exitosamente'), 'success');
 
-        // Cerrar modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('modalProducto'));
-        modal.hide();
+        if (closeModalId) {
+            const modalEl = document.getElementById(closeModalId);
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal?.hide();
+        }
 
-        // Recargar lista
+        if (previewContainerId) {
+            const previewContainer = document.getElementById(previewContainerId);
+            if (previewContainer) {
+                previewContainer.style.display = 'none';
+            }
+        }
+
         cargarProductos(currentPage);
 
     } catch (error) {
@@ -214,7 +262,7 @@ async function guardarProducto() {
     }
 }
 
-// Editar producto
+// Editar producto -> abre modal específico
 async function editarProducto(id) {
     try {
         const response = await fetch(`actions/productos_get.php?id=${id}`);
@@ -227,20 +275,21 @@ async function editarProducto(id) {
 
         const producto = data.data;
 
-        // Llenar form
-        document.getElementById('productoId').value = producto.id;
-        document.getElementById('nombre').value = producto.nombre;
-        document.getElementById('descripcion').value = producto.descripcion || '';
-        document.getElementById('codigo_barras').value = producto.codigo_barras;
-        document.getElementById('precio_compra').value = producto.precio_compra;
-        document.getElementById('precio_venta').value = producto.precio_venta;
+        document.getElementById('productoIdEdit').value = producto.id;
+        document.getElementById('nombreEdit').value = producto.nombre;
+        document.getElementById('descripcionEdit').value = producto.descripcion || '';
+        document.getElementById('codigo_barras_edit').value = producto.codigo_barras;
+        document.getElementById('precio_compra_edit').value = producto.precio_compra;
+        document.getElementById('precio_venta_edit').value = producto.precio_venta;
 
-        document.getElementById('modalTitle').textContent = '✏️ Editar Producto';
+        const previewContainerEdit = document.getElementById('previewContainerEdit');
+        if (previewContainerEdit) {
+            previewContainerEdit.style.display = 'none';
+        }
 
-        // Abrir modal
-        const modal = new bootstrap.Modal(document.getElementById('modalProducto'));
+        const modal = new bootstrap.Modal(document.getElementById('modalEditarProducto'));
         modal.show();
-        
+
     } catch (error) {
         showAlert('Error al cargar producto', 'danger');
         console.error(error);
@@ -307,8 +356,6 @@ function logout() {
 }
 
 // Al abrir el modal, limpiar form
-document.getElementById('modalProducto').addEventListener('show.bs.modal', (e) => {
-    if (!e.relatedTarget) {
-        nuevoProducto();
-    }
+document.getElementById('modalProducto').addEventListener('show.bs.modal', () => {
+    nuevoProducto();
 });
