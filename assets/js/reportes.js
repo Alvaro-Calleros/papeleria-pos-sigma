@@ -18,14 +18,8 @@ async function generarReporte() {
             case 'ventas':
                 await generarReporteVentas(fechaInicio, fechaFin);
                 break;
-            case 'productos':
-                await generarReporteMasVendidos();
-                break;
-            case 'inventario':
-                await generarReporteInventario();
-                break;
-            case 'compras':
-                showAlert('Reporte de compras en construcción', 'info');
+            case 'devoluciones':
+                await generarReporteDevoluciones(fechaInicio, fechaFin);
                 break;
         }
         
@@ -99,94 +93,6 @@ async function generarReporteVentas(start, end) {
     document.getElementById('infoRegistros').textContent = `${datos.length} registros encontrados`;
 }
 
-// Reporte de productos más vendidos
-async function generarReporteMasVendidos() {
-    const response = await fetch('actions/reportes_get.php?action=mas_vendidos');
-    const res = await response.json();
-    
-    if (!res.success) throw new Error(res.message);
-    
-    const datos = res.data;
-    datosActuales = datos;
-    
-    document.getElementById('tituloReporte').textContent = '🏆 Productos Más Vendidos';
-    document.getElementById('resumenStats').style.display = 'none';
-    
-    document.getElementById('headerReporte').innerHTML = `
-        <th>Producto</th>
-        <th>Código</th>
-        <th class="text-center">Cantidad Vendida</th>
-        <th class="text-end">Ingresos Generados</th>
-    `;
-    
-    let html = '';
-    if (datos.length === 0) {
-        html = '<tr><td colspan="4" class="text-center">No hay datos disponibles</td></tr>';
-    } else {
-        datos.forEach(item => {
-            html += `
-                <tr>
-                    <td>${item.nombre}</td>
-                    <td><code>${item.codigo_barras}</code></td>
-                    <td class="text-center"><strong>${item.total_vendido}</strong></td>
-                    <td class="text-end text-success"><strong>${formatMoney(item.ingresos_generados)}</strong></td>
-                </tr>
-            `;
-        });
-    }
-    
-    document.getElementById('bodyReporte').innerHTML = html;
-    document.getElementById('infoRegistros').textContent = `${datos.length} productos`;
-}
-
-// Reporte de inventario
-async function generarReporteInventario() {
-    const response = await fetch('actions/reportes_get.php?action=inventario');
-    const res = await response.json();
-    
-    if (!res.success) throw new Error(res.message);
-    
-    const datos = res.data;
-    datosActuales = datos;
-    
-    document.getElementById('tituloReporte').textContent = '📦 Inventario Actual';
-    document.getElementById('resumenStats').style.display = 'flex';
-    document.getElementById('statProductos').textContent = datos.length;
-    document.getElementById('statStock').textContent = datos.reduce((sum, p) => sum + parseInt(p.stock), 0);
-    // Valor inventario (costo * stock) - no viene en la vista v_productos_stock por defecto, 
-    // pero tenemos precio_venta. Usaremos precio_venta como referencia o 0 si no hay costo.
-    // La vista tiene precio_venta.
-    const valorTotal = datos.reduce((sum, p) => sum + (parseFloat(p.precio_venta) * parseInt(p.stock)), 0);
-    document.getElementById('statIngresos').textContent = formatMoney(valorTotal) + ' (Venta)';
-    
-    document.getElementById('headerReporte').innerHTML = `
-        <th>Producto</th>
-        <th>Código</th>
-        <th class="text-center">Stock</th>
-        <th class="text-end">Precio Venta</th>
-        <th class="text-center">Estado</th>
-    `;
-    
-    let html = '';
-    datos.forEach(item => {
-        const stock = parseInt(item.stock);
-        const stockClass = stock < 10 ? 'text-danger' : '';
-        const alerta = stock < 10 ? '<span class="badge bg-danger">⚠️ Bajo</span>' : '<span class="badge bg-success">✅ OK</span>';
-        
-        html += `
-            <tr>
-                <td>${item.nombre}</td>
-                <td><code>${item.codigo_barras}</code></td>
-                <td class="text-center ${stockClass}"><strong>${stock}</strong></td>
-                <td class="text-end">${formatMoney(item.precio_venta)}</td>
-                <td class="text-center">${alerta}</td>
-            </tr>
-        `;
-    });
-    
-    document.getElementById('bodyReporte').innerHTML = html;
-    document.getElementById('infoRegistros').textContent = `${datos.length} productos en inventario`;
-}
 
 // Exportar a CSV
 function exportarCSV() {
@@ -294,4 +200,108 @@ async function cargarDetalleVenta(folio) {
         console.error('Error al cargar detalle de venta', err);
         tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el detalle (backend pendiente)</td></tr>';
     }
+}
+
+async function verDetallesDevolucion(folio) {
+    const tbody = document.getElementById('detDevBody');
+    document.getElementById('detDevFolio').textContent = folio;
+    document.getElementById('detDevFolioVenta').textContent = '-';
+    document.getElementById('detDevCajero').textContent = '-';
+    document.getElementById('detDevFecha').textContent = '-';
+    document.getElementById('detDevTotal').textContent = '-';
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>';
+
+    const modal = new bootstrap.Modal(document.getElementById('modalDetalleDevolucion'));
+    modal.show();
+
+    try {
+        const resp = await fetch(`actions/reportes_get.php?action=detalle_devolucion&folio=${folio}`);
+        const res = await resp.json();
+        if (!res.success) throw new Error(res.message || 'Backend devoluciones pendiente');
+
+        const { cabecera, detalle } = res.data || {};
+        if (cabecera) {
+            document.getElementById('detDevFolioVenta').textContent = cabecera.venta_folio || '-';
+            document.getElementById('detDevCajero').textContent = cabecera.cajero || '-';
+            document.getElementById('detDevFecha').textContent = cabecera.fecha || '-';
+            if (cabecera.total !== undefined) {
+                document.getElementById('detDevTotal').textContent = formatMoney(cabecera.total);
+            }
+        }
+
+        const items = detalle || [];
+        if (!items.length) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin detalle recibido (backend pendiente)</td></tr>';
+            return;
+        }
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.nombre || 'Producto'}</td>
+                <td class="text-center">${item.cantidad}</td>
+                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
+                <td class="text-end">${formatMoney(item.subtotal)}</td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Error al cargar detalle de devolución', err);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el detalle (backend pendiente)</td></tr>';
+    }
+}
+
+// Reporte de devoluciones
+async function generarReporteDevoluciones(start, end) {
+    const response = await fetch(`actions/reportes_get.php?action=devoluciones_rango&start=${start}&end=${end}`);
+    const res = await response.json();
+    
+    if (!res.success) {
+        throw new Error(res.message || 'Backend devoluciones pendiente');
+    }
+    
+    const datos = res.data;
+    datosActuales = datos;
+    
+    document.getElementById('tituloReporte').textContent = '🔄 Reporte de Devoluciones';
+    document.getElementById('resumenStats').style.display = 'flex';
+    document.getElementById('statVentas').textContent = datos.length;
+    const totalDevoluciones = datos.reduce((sum, d) => sum + parseFloat(d.total), 0);
+    document.getElementById('statIngresos').textContent = formatMoney(totalDevoluciones);
+    document.getElementById('statProductos').textContent = '-';
+    document.getElementById('statStock').textContent = '-';
+    
+    document.getElementById('headerReporte').innerHTML = `
+        <th>Folio Devolución</th>
+        <th>Folio Venta</th>
+        <th>Fecha</th>
+        <th>Cajero</th>
+        <th class="text-end">Total</th>
+        <th class="text-center">Acciones</th>
+    `;
+    
+    let html = '';
+    if (datos.length === 0) {
+        html = '<tr><td colspan="6" class="text-center">No hay devoluciones en este rango</td></tr>';
+    } else {
+        datos.forEach(dev => {
+            html += `
+                <tr>
+                    <td><strong>${dev.folio}</strong></td>
+                    <td>${dev.venta_folio || '-'}</td>
+                    <td>${dev.fecha}</td>
+                    <td>${dev.cajero || '-'}</td>
+                    <td class="text-end"><strong>${formatMoney(dev.total)}</strong></td>
+                    <td class="text-center">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="dropdown">⋮</button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="verDetallesDevolucion('${dev.folio}'); return false;">📄 Ver Detalles</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+    
+    document.getElementById('bodyReporte').innerHTML = html;
+    document.getElementById('infoRegistros').textContent = `${datos.length} registros encontrados`;
 }
