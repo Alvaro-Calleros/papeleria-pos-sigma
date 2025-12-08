@@ -33,6 +33,15 @@ require_once 'includes/auth_admin.php';
                 margin-bottom: 20px;
             }
         }
+
+        .dropdown-menu {
+            min-width: 150px;
+        }
+        
+        .dropdown-item {
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -184,6 +193,61 @@ require_once 'includes/auth_admin.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modal de Devolución -->
+    <div class="modal fade" id="modalDevolucion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🔄 Procesar Devolución</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formDevolucion">
+                        <input type="hidden" id="devFolio">
+                        <input type="hidden" id="devVentaId">
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Folio de Venta:</strong></label>
+                            <p class="text-muted" id="devFolioDisplay"></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Total Original:</strong></label>
+                            <p class="text-muted" id="devTotalDisplay"></p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Productos en la venta:</strong></label>
+                            <div class="table-responsive border rounded">
+                                <table class="table table-sm mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th class="text-center">Cant.</th>
+                                            <th class="text-end">Precio</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="devDetalleBody">
+                                        <tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <small><strong>ℹ️ Nota:</strong> Esta devolución procesará todos los productos de la venta. El inventario se actualizará automáticamente.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarDevolucion()">Procesar Devolución</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function logout() {
             if (confirm('¿Cerrar sesión?')) {
