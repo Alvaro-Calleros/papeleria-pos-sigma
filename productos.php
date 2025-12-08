@@ -39,6 +39,9 @@ require_once 'includes/auth_admin.php';
             </button>
         </div>
 
+        <!-- Mensajes -->
+        <div id="alertContainer"></div>
+
         <!-- Búsqueda y filtros -->
         <div class="card mb-4 fade-in-up">
             <div class="card-body">
@@ -62,9 +65,6 @@ require_once 'includes/auth_admin.php';
                 </div>
             </div>
         </div>
-
-        <!-- Mensajes -->
-        <div id="alertContainer"></div>
 
         <!-- Tabla de productos -->
         <div class="card fade-in-up">
@@ -165,6 +165,66 @@ require_once 'includes/auth_admin.php';
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary-custom" onclick="guardarProducto()">
                         Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Producto -->
+    <div class="modal fade" id="modalEditarProducto" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, var(--verde-secondary), var(--verde)); color: white;">
+                    <h5 class="modal-title">✏️ Editar Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditarProducto">
+                        <input type="hidden" id="productoIdEdit" name="id">
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nombreEdit" class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" id="nombreEdit" name="nombre" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="codigo_barras_edit" class="form-label">Código de Barras *</label>
+                                <input type="text" class="form-control" id="codigo_barras_edit" name="codigo_barras" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="descripcionEdit" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="descripcionEdit" name="descripcion" rows="2"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="precio_compra_edit" class="form-label">Precio Compra *</label>
+                                <input type="number" class="form-control" id="precio_compra_edit" name="precio_compra" step="0.01" min="0" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="precio_venta_edit" class="form-label">Precio Venta *</label>
+                                <input type="number" class="form-control" id="precio_venta_edit" name="precio_venta" step="0.01" min="0" required>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="imagenEdit" class="form-label">Imagen del Producto</label>
+                                <input type="file" class="form-control" id="imagenEdit" name="imagen" accept="image/jpeg,image/png,image/jpg">
+                                <small class="text-muted">Máximo 5MB. Formatos: JPG, PNG</small>
+                            </div>
+
+                            <div class="col-12" id="previewContainerEdit" style="display: none;">
+                                <img id="imagePreviewEdit" src="" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom" onclick="guardarProductoEdit()">
+                        Guardar cambios
                     </button>
                 </div>
             </div>
