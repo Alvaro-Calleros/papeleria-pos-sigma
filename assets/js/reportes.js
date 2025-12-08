@@ -170,10 +170,49 @@ function confirmarDevolucion() {
     modal.hide();
 }
 
-// Ver detalles de venta (placeholder)
-function verDetallesVenta(folio) {
-    showAlert('Ver detalles: funcionalidad pendiente', 'info');
-    console.log('Ver detalles de venta:', folio);
+// Ver detalles de venta
+async function verDetallesVenta(folio) {
+    const tbody = document.getElementById('detVentaBody');
+    document.getElementById('detVentaFolio').textContent = folio;
+    document.getElementById('detVentaCajero').textContent = '-';
+    document.getElementById('detVentaFecha').textContent = '-';
+    document.getElementById('detVentaTotal').textContent = '-';
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>';
+
+    const modal = new bootstrap.Modal(document.getElementById('modalDetalleVenta'));
+    modal.show();
+
+    try {
+        const resp = await fetch(`actions/reportes_get.php?action=detalle_venta_completa&folio=${folio}`);
+        const res = await resp.json();
+        if (!res.success) throw new Error(res.message || 'Backend pendiente');
+
+        const { cabecera, detalle } = res.data || {};
+        if (cabecera) {
+            document.getElementById('detVentaCajero').textContent = cabecera.cajero || '-';
+            document.getElementById('detVentaFecha').textContent = cabecera.fecha || '-';
+            if (cabecera.total !== undefined) {
+                document.getElementById('detVentaTotal').textContent = formatMoney(cabecera.total);
+            }
+        }
+
+        const items = detalle || [];
+        if (!items.length) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin detalle recibido (backend pendiente)</td></tr>';
+            return;
+        }
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.nombre || 'Producto'}</td>
+                <td class="text-center">${item.cantidad}</td>
+                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
+                <td class="text-end">${formatMoney(item.subtotal)}</td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Error al cargar detalle de venta', err);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el detalle (backend pendiente)</td></tr>';
+    }
 }
 
 // Cargar detalle de venta para mostrar en el modal (requiere backend que acepte folio)
