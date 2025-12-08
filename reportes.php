@@ -82,9 +82,7 @@ require_once 'includes/auth_admin.php';
                         <label for="tipoReporte" class="form-label">Tipo de Reporte</label>
                         <select class="form-select" id="tipoReporte">
                             <option value="ventas">Ventas</option>
-                            <option value="productos">Productos más vendidos</option>
-                            <option value="inventario">Inventario</option>
-                            <option value="compras">Compras</option>
+                            <option value="devoluciones">Devoluciones</option>
                         </select>
                     </div>
                     
@@ -243,6 +241,43 @@ require_once 'includes/auth_admin.php';
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-danger" onclick="confirmarDevolucion()">Procesar Devolución</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle de Devolución -->
+    <div class="modal fade" id="modalDetalleDevolucion" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📄 Detalle de Devolución</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2"><strong>Folio devolución:</strong> <span id="detDevFolio">-</span></div>
+                    <div class="mb-2"><strong>Folio venta:</strong> <span id="detDevFolioVenta">-</span></div>
+                    <div class="mb-2"><strong>Cajero:</strong> <span id="detDevCajero">-</span></div>
+                    <div class="mb-2"><strong>Fecha:</strong> <span id="detDevFecha">-</span></div>
+                    <div class="mb-3"><strong>Total devuelto:</strong> <span id="detDevTotal">-</span></div>
+                    <div class="table-responsive border rounded">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="text-center">Cant.</th>
+                                    <th class="text-end">Precio</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detDevBody">
+                                <tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
