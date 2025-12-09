@@ -9,7 +9,7 @@ require_once 'includes/auth_admin.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos - Papelería Sigma</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?php echo time(); ?>">
 </head>
 <body>
     <div class="main-container">
@@ -62,18 +62,18 @@ require_once 'includes/auth_admin.php';
                 </div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: flex-end;">
-                        <div class="form-group" style="margin: 0;">
+                        <div class="form-group" style="margin: 0; flex: 1; min-width: 0;">
                             <label for="searchInput" class="form-label">
                                 Producto
                             </label>
                             <input type="text" class="coach-input" id="searchInput" 
-                                   placeholder="Nombre o código...">
+                                   placeholder="Nombre o código..." style="width: 100%; height: 45px; box-sizing: border-box;">
                         </div>
-                        <div class="form-group" style="margin: 0;">
+                        <div class="form-group" style="margin: 0; flex: 1; min-width: 0;">
                             <label for="filterActivo" class="form-label">
                                 Estado
                             </label>
-                            <select class="coach-input" id="filterActivo">
+                            <select id="filterActivo" class="coach-input" style="width: 100%; height: 45px; box-sizing: border-box;">
                                 <option value="todos">Todos</option>
                                 <option value="1" selected>Activos</option>
                                 <option value="0">Inactivos</option>
@@ -195,10 +195,10 @@ require_once 'includes/auth_admin.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModalProducto()" class="btn btn-secondary">
+                <button type="button" onclick="closeModalProducto()" class="btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="guardarProducto()" class="btn btn-primary">
+                <button type="button" onclick="guardarProducto()" class="btn btn-primary">
                     Guardar
                 </button>
             </div>
@@ -254,7 +254,7 @@ require_once 'includes/auth_admin.php';
                     <div class="form-group">
                         <label for="imagenEdit" class="form-label">Imagen del Producto</label>
                         <input type="file" class="coach-input" id="imagenEdit" name="imagen" accept="image/jpeg,image/png,image/jpg">
-                        <small style="color: #8b949e; font-size: 12px;">Máximo 5MB. Formatos: JPG, PNG</small>
+                        <small style="color: #8b949e; font-size: 12px;">Máximo 1MB. Formatos: JPG, PNG. Si dejas el campo vacío se conserva la imagen actual mostrada abajo.</small>
                     </div>
 
                     <div id="previewContainerEdit" style="display: none; margin-top: 16px;">
@@ -263,10 +263,10 @@ require_once 'includes/auth_admin.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModalEditarProducto()" class="btn btn-secondary">
+                <button type="button" onclick="closeModalEditarProducto()" class="btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="guardarProductoEdit()" class="btn btn-primary">
+                <button type="button" onclick="guardarProductoEdit()" class="btn btn-primary">
                     Guardar cambios
                 </button>
             </div>

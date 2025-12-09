@@ -116,6 +116,7 @@ function renderProductos(productos) {
     let html = '';
     productos.forEach(producto => {
         const stockColor = producto.stock < 10 ? '#f85149' : '#c9d1d9';
+        const mimeType = producto.imagen_tipo || 'image/jpeg';
         const estadoBadge = producto.activo === 1 
             ? '<span style="background: #2ea043; color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Activo</span>' 
             : '<span style="background: #484f58; color: #8b949e; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600;">Inactivo</span>';
@@ -125,7 +126,7 @@ function renderProductos(productos) {
                 <td>${producto.id}</td>
                 <td>
                     ${producto.imagen 
-                        ? `<img src="data:image/jpeg;base64,${producto.imagen}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #30363d;">` 
+                        ? `<img src="data:${mimeType};base64,${producto.imagen}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #30363d;">` 
                         : '<div style="width: 50px; height: 50px; background: #161b22; border: 1px solid #30363d; border-radius: 6px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-box" style="color: #484f58;"></i></div>'}
                 </td>
                 <td><strong>${producto.nombre}</strong></td>
@@ -263,6 +264,7 @@ async function guardarProductoDesdeFormulario(form, options = {}) {
         });
 
         const raw = await response.text();
+        console.debug('guardarProducto raw response:', raw);
         let data;
         try {
             data = JSON.parse(raw);
@@ -273,6 +275,7 @@ async function guardarProductoDesdeFormulario(form, options = {}) {
         }
 
         if (!data.success) {
+            console.error('Guardar producto error:', data);
             showAlert(data.message || 'Error al guardar producto', 'danger');
             return;
         }
@@ -330,8 +333,17 @@ async function editarProducto(id) {
         document.getElementById('precio_venta_edit').value = producto.precio_venta;
 
         const previewContainerEdit = document.getElementById('previewContainerEdit');
-        if (previewContainerEdit) {
-            previewContainerEdit.style.display = 'none';
+        const imagePreviewEdit = document.getElementById('imagePreviewEdit');
+
+        if (previewContainerEdit && imagePreviewEdit) {
+            if (producto.imagen) {
+                const mimeType = producto.imagen_tipo || 'image/jpeg';
+                imagePreviewEdit.src = `data:${mimeType};base64,${producto.imagen}`;
+                previewContainerEdit.style.display = 'block';
+            } else {
+                previewContainerEdit.style.display = 'none';
+                imagePreviewEdit.src = '';
+            }
         }
 
         openModalEditarProducto();
@@ -411,10 +423,10 @@ function showAlert(message, type) {
     const alertContainer = document.getElementById('alertContainer');
     
     const typeConfig = {
-        'success': { icon: '\uf058', color: '#2ea043', bg: '#0d1117' },
-        'danger': { icon: '\uf06a', color: '#f85149', bg: '#0d1117' },
-        'warning': { icon: '\uf071', color: '#d29922', bg: '#0d1117' },
-        'info': { icon: '\uf05a', color: '#58a6ff', bg: '#0d1117' }
+        'success': { iconClass: 'fa-check-circle', color: '#2ea043', bg: '#0d1117' },
+        'danger': { iconClass: 'fa-exclamation-triangle', color: '#f85149', bg: '#0d1117' },
+        'warning': { iconClass: 'fa-exclamation-circle', color: '#d29922', bg: '#0d1117' },
+        'info': { iconClass: 'fa-info-circle', color: '#58a6ff', bg: '#0d1117' }
     };
     
     const config = typeConfig[type] || typeConfig['info'];
@@ -436,15 +448,9 @@ function showAlert(message, type) {
     `;
     
     alert.innerHTML = `
-        <i class="fas" style="color: ${config.color}; font-size: 18px;"></i>
+        <i class="fas ${config.iconClass}" style="color: ${config.color}; font-size: 18px;"></i>
         <span style="flex: 1;">${message}</span>
     `;
-    
-    // Insertar ícono usando ::before en el primer i
-    const iconElement = alert.querySelector('i');
-    iconElement.style.setProperty('font-family', 'Font Awesome 6 Free');
-    iconElement.style.setProperty('font-weight', '900');
-    iconElement.textContent = String.fromCharCode(parseInt(config.icon.replace('\\u', '0x')));
     
     alertContainer.innerHTML = '';
     alertContainer.appendChild(alert);

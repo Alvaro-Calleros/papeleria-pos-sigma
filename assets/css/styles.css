@@ -293,41 +293,50 @@ select.coach-input {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    background-color: #161b22;
-    background-image: none;
-    color: #c9d1d9;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    font-family: inherit;
-    cursor: pointer;
-    height: auto;
-    line-height: 1.5;
-    min-height: 44px;
+    width: 100% !important;
+    padding: 12px 16px !important;
+    padding-right: 36px !important;
+    border: 1px solid #30363d !important;
+    border-radius: 8px !important;
+    background-color: #161b22 !important;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m7 10 5 5 5-5" stroke="%23c9d1d9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>') !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+    background-size: 20px !important;
+    color: #c9d1d9 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+    height: 44px !important;
+    line-height: 1.5 !important;
+}
+
+select.coach-input:hover {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m7 10 5 5 5-5" stroke="%238b949e" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>') !important;
 }
 
 select.coach-input:focus {
-    outline: none;
-    background-color: #1c2128;
-    border-color: #58a6ff;
-    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+    outline: none !important;
+    background-color: #1c2128 !important;
+    border-color: #58a6ff !important;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1) !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2358a6ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
 }
 
 select.coach-input option {
-    background-color: #161b22;
-    color: #c9d1d9;
-    padding: 8px;
+    background-color: #161b22 !important;
+    color: #c9d1d9 !important;
+    padding: 8px !important;
 }
 
 select.coach-input option:checked {
-    background-color: #1f6feb;
-    background-image: linear-gradient(#1f6feb, #1f6feb);
-    color: #ffffff;
+    background-color: #1f6feb !important;
+    color: #ffffff !important;
 }
+
+
 
 textarea.form-control {
     resize: vertical;

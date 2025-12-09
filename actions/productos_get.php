@@ -16,7 +16,7 @@ if ($id <= 0) {
 $conn = getConnection();
 
 try {
-    $stmt = $conn->prepare("SELECT id, nombre, descripcion, precio_compra, precio_venta, codigo_barras FROM productos WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, nombre, descripcion, precio_compra, precio_venta, codigo_barras, imagen, imagen_tipo FROM productos WHERE id = ?");
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -30,6 +30,9 @@ try {
     }
 
     $producto = $result->fetch_assoc();
+    if (!empty($producto['imagen'])) {
+        $producto['imagen'] = base64_encode($producto['imagen']);
+    }
     $stmt->close();
 
     echo json_encode([
