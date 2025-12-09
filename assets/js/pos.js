@@ -152,23 +152,21 @@ function renderCarrito(data) {
         const subtotalItem = parseFloat(item.precio_unitario) * parseInt(item.cantidad);
         
         html += `
-            <tr class="fade-in-up">
+            <tr>
+                <td style="font-weight: 700; color: #c9d1d9;">${escapeHtml(item.nombre)}</td>
+                <td style="color: #8b949e; font-size: 13px;">${escapeHtml(item.codigo_barras)}</td>
+                <td style="text-align: right;">${formatMoney(item.precio_unitario)}</td>
                 <td>
-                    <div class="fw-bold">${escapeHtml(item.nombre)}</div>
-                </td>
-                <td><small class="text-muted">${escapeHtml(item.codigo_barras)}</small></td>
-                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
-                <td class="text-center">
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary" onclick="cambiarCantidad(${index}, -1)">-</button>
-                        <span class="btn btn-light disabled" style="width: 50px; color: #000; font-weight: bold;">${item.cantidad}</span>
-                        <button class="btn btn-outline-secondary" onclick="cambiarCantidad(${index}, 1)">+</button>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="cambiarCantidad(${index}, -1)">−</button>
+                        <span class="qty-value">${item.cantidad}</span>
+                        <button class="qty-btn" onclick="cambiarCantidad(${index}, 1)">+</button>
                     </div>
                 </td>
-                <td class="text-end fw-bold">${formatMoney(subtotalItem)}</td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-outline-danger border-0" onclick="eliminarItem(${index})" title="Eliminar">
-                        🗑️
+                <td style="text-align: right; font-weight: 700;">${formatMoney(subtotalItem)}</td>
+                <td style="text-align: center;">
+                    <button class="delete-btn" onclick="eliminarItem(${index})" title="Eliminar">
+                        <i class="fas fa-trash"></i>
                     </button>
                 </td>
             </tr>
