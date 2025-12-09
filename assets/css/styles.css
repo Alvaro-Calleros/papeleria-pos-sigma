@@ -1108,29 +1108,136 @@ textarea.form-control {
         font-size: 13px;
     }
 
-    /* Responsive tables - NO scroll por defecto */
+    /* Responsive tables */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .coach-table {
         font-size: 12px;
-        width: 100%;
+        min-width: 100%;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 10px 8px;
+        padding: 8px 4px;
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Adjust column widths for mobile */
+    .coach-table th:nth-child(1),
+    .coach-table td:nth-child(1) {
+        max-width: 100px;
+    }
+
+    /* Carrito móvil: vista tipo tarjeta */
+    .cart-table thead {
+        display: none;
+    }
+
+    .cart-table {
+        width: 100%;
+        border-collapse: separate;
+    }
+
+    .cart-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid #30363d;
+        border-radius: 12px;
+        background: #0f141b;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .cart-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 0;
+        font-size: 14px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: initial;
+    }
+
+    .cart-table td::before {
+        content: attr(data-label);
+        color: #8b949e;
+        font-weight: 600;
         font-size: 12px;
+        text-transform: none;
     }
 
-    /* Solo scroll horizontal en tabla del carrito */
-    .carrito-table-wrapper {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin: 0 -16px;
-        padding: 0 16px;
+    .cart-table td:nth-child(1)::before { content: "Producto"; }
+    .cart-table td:nth-child(2)::before { content: "Código"; }
+    .cart-table td:nth-child(3)::before { content: "Precio"; }
+    .cart-table td:nth-child(4)::before { content: "Cant."; }
+    .cart-table td:nth-child(5)::before { content: "Subtotal"; }
+    .cart-table td:nth-child(6)::before { content: ""; }
+
+    .cart-table td:nth-child(1) {
+        font-weight: 700;
+        color: #c9d1d9;
     }
 
-    .carrito-table-wrapper .coach-table {
-        min-width: 600px;
-        width: 600px;
+    .cart-table td:nth-child(3),
+    .cart-table td:nth-child(5) {
+        font-weight: 700;
+    }
+
+    .cart-table td:nth-child(6) {
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    .cart-table button,
+    .cart-table .btn-danger,
+    .cart-table .btn-secondary,
+    .cart-table .btn-primary {
+        min-width: 36px;
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Mensaje carrito vacío no recorta texto */
+    #carritoBody tr[style*="background: transparent"] td {
+        white-space: normal !important;
+        text-overflow: initial !important;
+    }
+
+    .coach-table th:nth-child(2),
+    .coach-table td:nth-child(2) {
+        max-width: 70px;
+    }
+
+    .coach-table th:nth-child(3),
+    .coach-table td:nth-child(3) {
+        max-width: 60px;
+    }
+
+    .coach-table th:nth-child(4),
+    .coach-table td:nth-child(4) {
+        max-width: 50px;
+    }
+
+    .coach-table th:nth-child(5),
+    .coach-table td:nth-child(5) {
+        max-width: 70px;
+    }
+
+    .coach-table th:nth-child(6),
+    .coach-table td:nth-child(6) {
+        width: 40px;
     }
 
     /* Responsive forms */
@@ -1297,33 +1404,49 @@ textarea.form-control {
         padding: 16px 0;
     }
 
-    /* Carrito wrapper más compacto */
-    .carrito-table-wrapper {
-        margin: 0 -12px;
-        padding: 0 12px;
-    }
-
-    .carrito-table-wrapper .coach-table {
-        min-width: 550px;
-        width: 550px;
-    }
-
-    /* Tablas normales sin cambios en móvil */
+    /* Table even more compact */
     .coach-table {
-        font-size: 12px;
-        width: 100%;
+        font-size: 10px;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 10px 8px;
-        font-size: 12px;
+        padding: 6px 3px;
+        font-size: 10px;
+    }
+
+    /* Tighter column widths for very small screens */
+    .coach-table th:nth-child(1),
+    .coach-table td:nth-child(1) {
+        max-width: 80px;
+    }
+
+    .coach-table th:nth-child(2),
+    .coach-table td:nth-child(2) {
+        max-width: 60px;
+    }
+
+    .coach-table th:nth-child(3),
+    .coach-table td:nth-child(3) {
+        max-width: 50px;
+    }
+
+    .coach-table th:nth-child(4),
+    .coach-table td:nth-child(4) {
+        max-width: 40px;
+    }
+
+    .coach-table th:nth-child(5),
+    .coach-table td:nth-child(5) {
+        max-width: 60px;
     }
 
     /* Empty cart message */
     #carritoBody tr[style*="background: transparent"] td {
         padding: 40px 12px !important;
         font-size: 14px !important;
+        white-space: normal !important;
+        max-width: none !important;
     }
 
     #carritoBody p {
