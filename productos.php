@@ -79,7 +79,7 @@ require_once 'includes/auth_admin.php';
                                 <option value="0">Inactivos</option>
                             </select>
                         </div>
-                        <button class="btn-primary" onclick="buscarProductos()" style="width: auto; padding: 10px 24px; font-size: 14px; margin-top: 0;">
+                        <button class="btn-primary" onclick="buscarProductos()" style="width: auto; padding: 10px 24px; font-size: 14px; margin-top: 24px; align-self: flex-end;">
                             <i class="fas fa-search"></i>
                             Buscar
                         </button>
