@@ -369,6 +369,13 @@ body {
     box-shadow: none;
 }
 
+.action-bar .btn-primary {
+    width: auto;
+    padding: 10px 24px;
+    margin-top: 0;
+    font-size: 14px;
+}
+
 .btn-secondary {
     width: 100%;
     padding: 16px;
