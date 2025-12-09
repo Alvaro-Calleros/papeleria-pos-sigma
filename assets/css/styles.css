@@ -1114,17 +1114,7 @@ textarea.form-control {
         -webkit-overflow-scrolling: touch;
     }
 
-    .coach-table {
-        font-size: 12px;
-    }
-
-    .coach-table th,
-    .coach-table td {
-        padding: 8px 6px;
-        font-size: 11px;
-    }
-
-    /* Carrito table wrapper with horizontal scroll */
+    /* Solo scroll horizontal en tabla del carrito */
     .carrito-table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
@@ -1132,14 +1122,18 @@ textarea.form-control {
         padding: 0 16px;
     }
 
-    #carritoTable {
+    .carrito-table-wrapper .coach-table {
         min-width: 600px;
-        width: 100%;
     }
 
-    #carritoTable th,
-    #carritoTable td {
-        white-space: nowrap;
+    .coach-table {
+        font-size: 12px;
+    }
+
+    .coach-table th,
+    .coach-table td {
+        padding: 10px 8px;
+        font-size: 12px;
     }
 
     /* Responsive forms */
@@ -1306,6 +1300,16 @@ textarea.form-control {
         padding: 16px 0;
     }
 
+    /* Carrito wrapper más compacto */
+    .carrito-table-wrapper {
+        margin: 0 -12px;
+        padding: 0 12px;
+    }
+
+    .carrito-table-wrapper .coach-table {
+        min-width: 550px;
+    }
+
     /* Table even more compact */
     .coach-table {
         font-size: 11px;
@@ -1313,25 +1317,14 @@ textarea.form-control {
 
     .coach-table th,
     .coach-table td {
-        padding: 8px 5px;
+        padding: 8px 6px;
         font-size: 11px;
-    }
-
-    /* Carrito table wrapper adjustments for small screens */
-    .carrito-table-wrapper {
-        margin: 0 -12px;
-        padding: 0 12px;
-    }
-
-    #carritoTable {
-        min-width: 550px;
     }
 
     /* Empty cart message */
     #carritoBody tr[style*="background: transparent"] td {
         padding: 40px 12px !important;
         font-size: 14px !important;
-        white-space: normal !important;
     }
 
     #carritoBody p {

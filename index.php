@@ -96,7 +96,7 @@ require_once 'includes/auth_user.php';
                         </div>
 
                         <div class="carrito-table-wrapper">
-                            <table class="coach-table" id="carritoTable">
+                            <table class="coach-table">
                                 <thead>
                                     <tr>
                                         <th>Producto</th>
