@@ -1108,55 +1108,38 @@ textarea.form-control {
         font-size: 13px;
     }
 
-    /* Responsive tables */
-    .table-wrapper {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    /* Responsive tables - scroll horizontal */
+    .card:has(.coach-table) {
+        padding: 16px 0;
+    }
+
+    .card:has(.coach-table) .card-header {
+        padding: 0 16px 16px;
+        margin-bottom: 0;
     }
 
     .coach-table {
-        font-size: 12px;
-        min-width: 100%;
+        font-size: 13px;
+        min-width: 600px;
+        display: table;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 8px 4px;
-        font-size: 11px;
+        padding: 10px 8px;
+        font-size: 12px;
         white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
-    /* Adjust column widths for mobile */
-    .coach-table th:nth-child(1),
-    .coach-table td:nth-child(1) {
-        max-width: 100px;
+    /* Wrapper con scroll */
+    .card .coach-table {
+        margin: 0;
     }
 
-    .coach-table th:nth-child(2),
-    .coach-table td:nth-child(2) {
-        max-width: 70px;
-    }
-
-    .coach-table th:nth-child(3),
-    .coach-table td:nth-child(3) {
-        max-width: 60px;
-    }
-
-    .coach-table th:nth-child(4),
-    .coach-table td:nth-child(4) {
-        max-width: 50px;
-    }
-
-    .coach-table th:nth-child(5),
-    .coach-table td:nth-child(5) {
-        max-width: 70px;
-    }
-
-    .coach-table th:nth-child(6),
-    .coach-table td:nth-child(6) {
-        width: 40px;
+    /* Permitir scroll en el contenedor de la tabla */
+    .card:has(.coach-table) {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     /* Responsive forms */
@@ -1323,41 +1306,16 @@ textarea.form-control {
         padding: 16px 0;
     }
 
-    /* Table even more compact */
+    /* Table mantiene tamaño legible */
     .coach-table {
-        font-size: 10px;
+        font-size: 12px;
+        min-width: 550px;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 6px 3px;
-        font-size: 10px;
-    }
-
-    /* Tighter column widths for very small screens */
-    .coach-table th:nth-child(1),
-    .coach-table td:nth-child(1) {
-        max-width: 80px;
-    }
-
-    .coach-table th:nth-child(2),
-    .coach-table td:nth-child(2) {
-        max-width: 60px;
-    }
-
-    .coach-table th:nth-child(3),
-    .coach-table td:nth-child(3) {
-        max-width: 50px;
-    }
-
-    .coach-table th:nth-child(4),
-    .coach-table td:nth-child(4) {
-        max-width: 40px;
-    }
-
-    .coach-table th:nth-child(5),
-    .coach-table td:nth-child(5) {
-        max-width: 60px;
+        padding: 8px 6px;
+        font-size: 11px;
     }
 
     /* Empty cart message */
@@ -1365,7 +1323,6 @@ textarea.form-control {
         padding: 40px 12px !important;
         font-size: 14px !important;
         white-space: normal !important;
-        max-width: none !important;
     }
 
     #carritoBody p {
@@ -1374,6 +1331,15 @@ textarea.form-control {
 
     #carritoBody small {
         font-size: 13px !important;
+    }
+
+    /* Card con tabla sin padding lateral para mejor scroll */
+    .card:has(.coach-table) {
+        padding: 16px 0 !important;
+    }
+
+    .card:has(.coach-table) .card-header {
+        padding: 0 16px 16px !important;
     }
 
     /* Input adjustments */
