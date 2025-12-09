@@ -538,32 +538,259 @@ ticket.php    → require 'auth_user.php'
 
 ## 8. Mejoras Futuras (Roadmap)
 
-### 8.1 Funcionalidades Pendientes
-- [ ] Módulo de compras (ingresar stock)
+### 8.1 Funcionalidades Completadas (Diciembre 2024)
 - [x] Módulo de devoluciones (UI completo, backend pendiente)
 - [x] Reportes de ventas y devoluciones con acciones
+- [x] **Modo oscuro Dark Pro (Implementado)** ✨
+- [x] Diseño completamente rediseñado sin dependencia de Bootstrap
+- [x] Logo SVG profesional con gradiente
+- [x] Sidebar navigation con iconos Font Awesome
+- [x] Sistema de alertas custom sin Bootstrap JS
+
+### 8.2 Funcionalidades Pendientes
+- [ ] Módulo de compras (ingresar stock)
 - [ ] Historial de ventas con búsqueda avanzada
 - [ ] Dashboard con gráficas (Chart.js)
-- [ ] Modo oscuro (dark mode)
 - [ ] PWA (Progressive Web App) para uso offline
 
-### 8.2 Optimizaciones Técnicas
+### 8.3 Optimizaciones Técnicas
 - [ ] Implementar SPA con framework (React/Vue)
 - [ ] Caché de productos en localStorage
 - [ ] Lazy loading de imágenes
 - [ ] Compresión de assets (minify CSS/JS)
 - [ ] Service Workers para offline support
 
-### 8.3 UX/UI
+### 8.4 UX/UI Futuras
 - [ ] Sonidos de feedback (beep al escanear)
-- [ ] Animaciones más fluidas (Framer Motion)
-- [ ] Temas personalizables
+- [ ] Tema claro (light mode) alternativo
 - [ ] Tooltips informativos
 - [ ] Tutorial interactivo para nuevos usuarios
+- [ ] Atajos de teclado configurables
 
 ---
 
-## 9. Mantenimiento
+## 9. Diseño Dark Pro (Actualización Diciembre 2024)
+
+### 9.1 Arquitectura del Diseño
+
+El sistema ha sido completamente rediseñado con un tema oscuro profesional inspirado en GitHub Dark y VS Code.
+
+#### Estructura Visual
+```
+┌──────────────────────────────────────────┐
+│  Sidebar (280px)      │  Main Content    │
+│  ┌──────────────┐     │                  │
+│  │ Logo SVG     │     │  Header          │
+│  ├──────────────┤     │  ┌─────────────┐ │
+│  │ Dashboard ✓  │     │  │ User Info   │ │
+│  │ Productos    │     │  └─────────────┘ │
+│  │ Reportes     │     │                  │
+│  │              │     │  Dashboard Grid  │
+│  │ (flex space) │     │  ┌──────┬──────┐ │
+│  │              │     │  │Cart  │Stats │ │
+│  │ Cerrar Sesión│     │  └──────┴──────┘ │
+│  └──────────────┘     │                  │
+└──────────────────────────────────────────┘
+```
+
+### 9.2 Paleta de Colores Dark Pro
+
+```css
+/* Backgrounds */
+#0d1117  /* Fondo principal (background) */
+#161b22  /* Fondo secundario (cards, sidebar) */
+#21262d  /* Fondo hover */
+
+/* Borders */
+#30363d  /* Bordes principales */
+
+/* Accent Colors */
+#58a6ff  /* Azul principal (primary) */
+#1f6feb  /* Azul secundario (botones) */
+#2ea043  /* Verde (success) */
+#f85149  /* Rojo (danger) */
+
+/* Text */
+#c9d1d9  /* Texto principal */
+#8b949e  /* Texto secundario/muted */
+```
+
+### 9.3 Componentes Principales
+
+#### Sidebar
+```css
+- Ancho fijo: 280px
+- Background: #161b22
+- Padding: 40px 24px
+- Border-right: 1px solid #30363d
+- Logo: 80px de altura
+- Nav items con hover effect
+```
+
+#### Cards
+```css
+- Background: #161b22
+- Border: 1px solid #30363d
+- Border-radius: 16px
+- Padding: 32px
+- Hover: border-color #58a6ff + box-shadow
+```
+
+#### Tabla de Carrito
+```css
+- Border-collapse: separate
+- Border-spacing: 0 10px
+- Rows: background #0d1117
+- Border-radius: 12px en cada row
+- Hover: borde azul + glow effect
+```
+
+#### Botones
+```css
+.btn-primary {
+  - Background: #1f6feb
+  - Color: #ffffff
+  - Border-radius: 12px
+  - Hover: #1a5dd9 + box-shadow
+  - Disabled: opacity 0.5
+}
+
+.btn-secondary {
+  - Background: transparent
+  - Border: 1px solid #30363d
+  - Hover: background #21262d
+}
+
+.qty-btn {
+  - Size: 36x36px
+  - Border-radius: 8px
+  - Color: #58a6ff
+  - Hover: background #1f6feb + color white
+}
+```
+
+### 9.4 Sistema de Alertas Custom
+
+Sin dependencia de Bootstrap JS, implementado con JavaScript vanilla:
+
+```javascript
+// Tipos de alertas
+.alert-success  // Verde #2ea043
+.alert-danger   // Rojo #f85149
+.alert-warning  // Amarillo #bb8009
+.alert-info     // Azul #58a6ff
+
+// Features
+- Auto-dismiss después de 3 segundos
+- Fade out suave (opacity transition)
+- Botón close con icono Font Awesome
+- Posición fixed top-right
+```
+
+### 9.5 Animaciones y Transiciones
+
+```css
+/* Transiciones suaves */
+transition: all 0.2s ease;
+
+/* Hover effects */
+- Cards: elevación con box-shadow
+- Buttons: cambio de color + ligera elevación
+- Nav items: cambio de background
+
+/* Loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+```
+
+### 9.6 Tipografía
+
+```css
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+/* Tamaños */
+- Page title: 52px, weight 900
+- Card title: 26px, weight 900
+- Body text: 16px, weight 600
+- Small text: 13-14px
+- Total display: 48px, weight 900
+```
+
+### 9.7 Logo SVG
+
+Ubicación: `assets/images/papeleria-sigma-logo.svg`
+
+```svg
+- Viewbox: 210x65
+- Circle-notch: radius 18px, stroke-width 7px
+- Gradient: #58a6ff → #1f6feb
+- Text: "Papelería" 16px + "Sigma" 25px
+- Font-weight: 800
+```
+
+### 9.8 Iconografía
+
+**Font Awesome 6.4.2:**
+```html
+- fa-home: Dashboard
+- fa-box: Productos
+- fa-chart-line: Reportes
+- fa-barcode: Escanear código
+- fa-shopping-cart: Carrito
+- fa-receipt: Resumen
+- fa-fire: Ventas hoy
+- fa-coins: Total
+- fa-check-circle: Confirmar
+- fa-trash: Eliminar/Limpiar
+- fa-user-circle: Usuario
+- fa-sign-out-alt: Cerrar sesión
+```
+
+### 9.9 Grid Layout
+
+```css
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 28px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  grid-template-columns: 1fr;
+}
+```
+
+### 9.10 Archivos del Diseño
+
+```
+/assets/css/styles.css          # CSS completo Dark Pro (508 líneas)
+/assets/images/papeleria-sigma-logo.svg
+/design-darkpro.html           # Mockup de referencia
+/index.php                     # POS con Dark Pro aplicado
+```
+
+### 9.11 Sin Dependencias Externas
+
+El diseño Dark Pro NO requiere:
+- ❌ Bootstrap CSS
+- ❌ Bootstrap JS
+- ❌ jQuery
+- ✅ Solo Font Awesome para iconos
+- ✅ JavaScript vanilla puro
+
+### 9.12 Compatibilidad
+
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+- ⚠️ IE11 no soportado (CSS Grid, custom properties)
+
+---
+
+## 10. Mantenimiento
 
 ### 9.1 Actualizar Estilos
 Archivo: `assets/css/style.css`
