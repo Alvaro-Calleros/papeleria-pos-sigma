@@ -262,7 +262,15 @@ async function guardarProductoDesdeFormulario(form, options = {}) {
             body: formData
         });
 
-        const data = await response.json();
+        const raw = await response.text();
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch (parseErr) {
+            console.error('Respuesta no JSON al guardar:', raw);
+            showAlert('Error del servidor: ' + raw.substring(0, 200), 'danger');
+            return;
+        }
 
         if (!data.success) {
             showAlert(data.message || 'Error al guardar producto', 'danger');
@@ -297,7 +305,15 @@ async function guardarProductoDesdeFormulario(form, options = {}) {
 async function editarProducto(id) {
     try {
         const response = await fetch(`actions/productos_get.php?id=${id}`);
-        const data = await response.json();
+        const raw = await response.text();
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch (parseErr) {
+            console.error('Respuesta no JSON al cargar producto:', raw);
+            showAlert('Error del servidor: ' + raw.substring(0, 200), 'danger');
+            return;
+        }
 
         if (!data.success) {
             showAlert(data.message || 'Error al cargar producto', 'danger');
@@ -344,7 +360,15 @@ async function eliminarProducto(id) {
             body: formData
         });
 
-        const data = await response.json();
+        const raw = await response.text();
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch (parseErr) {
+            console.error('Respuesta no JSON al eliminar:', raw);
+            showAlert('Error del servidor: ' + raw.substring(0, 200), 'danger');
+            return;
+        }
 
         if (!data.success) {
             showAlert(data.message || 'Error al eliminar producto', 'danger');
