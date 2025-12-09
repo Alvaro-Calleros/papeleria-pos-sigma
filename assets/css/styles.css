@@ -17,7 +17,7 @@ body {
 
 /* Global scrollbar styling */
 :root {
-    scrollbar-color: #1f6feb #0d1117;
+    scrollbar-color: #30363d #0d1117;
     scrollbar-width: thin;
 }
 
@@ -32,13 +32,13 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-    background: #1f6feb;
+    background: #30363d;
     border-radius: 8px;
     border: 2px solid #0d1117;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background: #58a6ff;
+    background: #1f6feb;
     border-color: #0d1117;
 }
 
