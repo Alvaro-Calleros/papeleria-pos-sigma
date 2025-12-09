@@ -335,10 +335,14 @@ function escapeHtml(text) {
 function showAlert(message, type) {
     const container = document.getElementById('alertContainer');
     const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.className = `alert alert-${type}`;
     alert.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <span>${message}</span>
+            <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     `;
     
     container.innerHTML = '';
@@ -346,8 +350,8 @@ function showAlert(message, type) {
     
     // Auto cerrar después de 3s
     setTimeout(() => {
-        alert.classList.remove('show');
-        setTimeout(() => alert.remove(), 150);
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 300);
     }, 3000);
 }
 

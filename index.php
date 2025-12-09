@@ -139,6 +139,11 @@ require_once 'includes/auth_user.php';
                             <i class="fas fa-trash"></i>
                             Limpiar Carrito
                         </button>
+
+                        <div id="loadingSpinner" class="d-none" style="margin-top: 24px; text-align: center;">
+                            <div class="spinner-custom"></div>
+                            <p style="color: #8b949e; margin-top: 12px; font-weight: 600;">Procesando...</p>
+                        </div>
                     </div>
 
                     <div class="stats-grid" style="margin-top: 28px;">
