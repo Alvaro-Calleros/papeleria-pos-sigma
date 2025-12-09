@@ -15,6 +15,33 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Global scrollbar styling */
+:root {
+    scrollbar-color: #30363d #0d1117;
+    scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #0d1117;
+    border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 8px;
+    border: 2px solid #0d1117;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #58a6ff;
+    border-color: #0d1117;
+}
+
 .main-container {
     display: flex;
     min-height: 100vh;
