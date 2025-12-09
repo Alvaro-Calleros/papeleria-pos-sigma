@@ -1147,9 +1147,9 @@ textarea.form-control {
     .cart-table tbody tr {
         display: flex;
         flex-direction: column;
-        gap: 8px;
-        padding: 12px;
-        margin-bottom: 12px;
+        gap: 6px;
+        padding: 10px;
+        margin-bottom: 10px;
         border: 1px solid #30363d;
         border-radius: 12px;
         background: #0f141b;
@@ -1160,9 +1160,9 @@ textarea.form-control {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 10px;
-        padding: 4px 0;
-        font-size: 14px;
+        gap: 8px;
+        padding: 2px 0;
+        font-size: 13px;
         white-space: normal;
         overflow: visible;
         text-overflow: initial;
@@ -1172,7 +1172,7 @@ textarea.form-control {
         content: attr(data-label);
         color: #8b949e;
         font-weight: 600;
-        font-size: 12px;
+        font-size: 11px;
         text-transform: none;
     }
 
@@ -1195,15 +1195,15 @@ textarea.form-control {
 
     .cart-table td:nth-child(6) {
         justify-content: flex-end;
-        gap: 12px;
+        gap: 10px;
     }
 
     .cart-table button,
     .cart-table .btn-danger,
     .cart-table .btn-secondary,
     .cart-table .btn-primary {
-        min-width: 36px;
-        min-height: 36px;
+        min-width: 32px;
+        min-height: 32px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
