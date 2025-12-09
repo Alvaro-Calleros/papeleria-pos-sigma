@@ -49,7 +49,13 @@ require_once 'includes/auth_admin.php';
                         <span id="userName"><?= htmlspecialchars($_SESSION['nombre']) ?></span>
                     </span>
                 </div>
-                <h1 class="page-title">Productos</h1>
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <h1 class="page-title">Productos</h1>
+                    <button class="btn-primary" onclick="openModalProducto()" style="width: auto; padding: 12px 24px; margin-top: 0; font-size: 14px;">
+                        <i class="fas fa-plus"></i>
+                        Nuevo Producto
+                    </button>
+                </div>
             </div>
 
             <!-- Búsqueda y filtros -->
@@ -59,10 +65,6 @@ require_once 'includes/auth_admin.php';
                         <i class="fas fa-search"></i>
                         Buscar
                     </h3>
-                    <button class="btn-icon" onclick="openModalProducto()" title="Nuevo Producto" style="all: unset; cursor: pointer; padding: 8px 16px; background: #1f6feb; color: white; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; transition: all 0.2s;">
-                        <i class="fas fa-plus"></i>
-                        Nuevo
-                    </button>
                 </div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: flex-end;">
