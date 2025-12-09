@@ -7,7 +7,6 @@ async function generarReporte() {
     const fechaInicio = document.getElementById('fechaInicio').value;
     const fechaFin = document.getElementById('fechaFin').value;
     
-    // Para ventas se requieren fechas
     if (tipo === 'ventas' && (!fechaInicio || !fechaFin)) {
         showAlert('Por favor seleccione las fechas', 'warning');
         return;
@@ -39,32 +38,28 @@ async function generarReporteVentas(start, end) {
     }
     
     const datos = res.data;
+    const stats = res.stats || { productos_vendidos: 0, stock_total: 0 };
     datosActuales = datos;
     
-    // Actualizar título
-    document.getElementById('tituloReporte').textContent = '📊 Reporte de Ventas';
+    document.getElementById('tituloReporte').innerHTML = '<i class="fas fa-chart-line"></i><span>Reporte de Ventas</span>';
     
-    // Mostrar estadísticas
-    document.getElementById('resumenStats').style.display = 'flex';
+    document.getElementById('resumenStats').style.display = 'grid';
     document.getElementById('statVentas').textContent = datos.length;
     const totalIngresos = datos.reduce((sum, v) => sum + parseFloat(v.total), 0);
     document.getElementById('statIngresos').textContent = formatMoney(totalIngresos);
-    // No tenemos items count en este query, lo omitimos o calculamos si el backend lo mandara
-    document.getElementById('statProductos').textContent = '-';
-    
-    // Headers de tabla
+    document.getElementById('statProductos').textContent = stats.productos_vendidos;
+    document.getElementById('statStock').textContent = stats.stock_total;
     document.getElementById('headerReporte').innerHTML = `
         <th>Folio</th>
         <th>Fecha</th>
         <th>Cajero</th>
-        <th class="text-end">Total</th>
-        <th class="text-center">Acciones</th>
+        <th style="text-align:right;">Total</th>
+        <th style="text-align:center;">Acciones</th>
     `;
     
-    // Datos
     let html = '';
     if (datos.length === 0) {
-        html = '<tr><td colspan="5" class="text-center">No hay ventas en este rango</td></tr>';
+        html = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: #8b949e;">No hay ventas en este rango</td></tr>';
     } else {
         datos.forEach(venta => {
             html += `
@@ -72,16 +67,15 @@ async function generarReporteVentas(start, end) {
                     <td><strong>${venta.folio}</strong></td>
                     <td>${venta.fecha}</td>
                     <td>${venta.cajero}</td>
-                    <td class="text-end"><strong>${formatMoney(venta.total)}</strong></td>
-                    <td class="text-center">
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="dropdown">
-                                ⋮
+                    <td style="text-align:right;"><strong>${formatMoney(venta.total)}</strong></td>
+                    <td style="text-align:center;">
+                        <div class="action-group">
+                            <button class="action-btn" title="Ver detalles" onclick="verDetallesVenta(${venta.id}, '${venta.folio}')">
+                                <i class="fas fa-receipt"></i>
                             </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="abrirModalDevolucion('${venta.folio}', ${venta.total}); return false;">🔄 Devolución</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="verDetallesVenta('${venta.folio}'); return false;">📄 Ver Detalles</a></li>
-                            </ul>
+                            <button class="action-btn" data-variant="danger" title="Procesar devolución" onclick="abrirModalDevolucion(${venta.id}, '${venta.folio}', ${venta.total})">
+                                <i class="fas fa-undo-alt"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -130,114 +124,116 @@ function formatMoney(amount) {
     return '$' + parseFloat(amount).toFixed(2);
 }
 
-function showAlert(message, type) {
+function showAlert(message, type = 'success') {
     const alertContainer = document.getElementById('alertContainer');
-    const alertClass = type === 'success' ? 'alert-success-custom' : 
-                      type === 'warning' ? 'alert-warning' : 'alert-danger-custom';
-    
     const alert = document.createElement('div');
-    alert.className = `alert ${alertClass} fade-in-up`;
-    alert.innerHTML = `<strong>${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : '❌'}</strong> ${message}`;
-    
+    const palette = {
+        success: { icon: 'fa-circle-check', color: '#3fb950' },
+        warning: { icon: 'fa-triangle-exclamation', color: '#e3b341' },
+        danger: { icon: 'fa-circle-xmark', color: '#f85149' }
+    };
+    const tone = palette[type] || palette.success;
+
+    alert.className = `alert alert-${type}`;
+    alert.style.border = `1px solid ${tone.color}33`;
+    alert.innerHTML = `
+        <span style="display:flex; align-items:center; gap:10px;">
+            <i class="fas ${tone.icon}" style="color:${tone.color};"></i>
+            <span>${message}</span>
+        </span>
+    `;
+
     alertContainer.innerHTML = '';
     alertContainer.appendChild(alert);
-    
-    setTimeout(() => alert.remove(), 3000);
+    setTimeout(() => alert.remove(), 3200);
 }
 
 // Abrir modal de devolución
-function abrirModalDevolucion(folio, total) {
+function abrirModalDevolucion(ventaId, folio, total) {
+    document.getElementById('devVentaId').value = ventaId;
     document.getElementById('devFolio').value = folio;
     document.getElementById('devFolioDisplay').textContent = folio;
     document.getElementById('devTotalDisplay').textContent = formatMoney(total);
-    document.getElementById('devDetalleBody').innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>';
-    cargarDetalleVenta(folio);
-    
-    const modal = new bootstrap.Modal(document.getElementById('modalDevolucion'));
-    modal.show();
+    document.getElementById('devDetalleBody').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Cargando detalle...</td></tr>';
+    cargarDetalleVenta(ventaId);
+    toggleModal('modalDevolucion', true);
 }
 
 // Confirmar devolución (frontend only - needs backend)
 function confirmarDevolucion() {
     const folio = document.getElementById('devFolio').value;
-    
-    // TODO: Backend call needed
-    console.log('Devolución a procesar (se requiere backend):', { folio });
-    showAlert('⚠️ Backend pendiente: La devolución no se puede procesar aún', 'warning');
-    
-    // Close modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('modalDevolucion'));
-    modal.hide();
+    const ventaId = document.getElementById('devVentaId').value;
+
+    console.log('Devolución a procesar (se requiere backend):', { folio, ventaId });
+    showAlert('Backend pendiente: la devolución aún no se procesa', 'warning');
+    toggleModal('modalDevolucion', false);
 }
 
 // Ver detalles de venta
-async function verDetallesVenta(folio) {
+async function verDetallesVenta(ventaId, folio) {
     const tbody = document.getElementById('detVentaBody');
     document.getElementById('detVentaFolio').textContent = folio;
     document.getElementById('detVentaCajero').textContent = '-';
     document.getElementById('detVentaFecha').textContent = '-';
     document.getElementById('detVentaTotal').textContent = '-';
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Cargando detalle...</td></tr>';
 
-    const modal = new bootstrap.Modal(document.getElementById('modalDetalleVenta'));
-    modal.show();
+    toggleModal('modalDetalleVenta', true);
 
     try {
-        const resp = await fetch(`actions/reportes_get.php?action=detalle_venta_completa&folio=${folio}`);
+        const resp = await fetch(`actions/reportes_get.php?action=detalle_venta&venta_id=${ventaId}`);
         const res = await resp.json();
         if (!res.success) throw new Error(res.message || 'Backend pendiente');
 
-        const { cabecera, detalle } = res.data || {};
-        if (cabecera) {
-            document.getElementById('detVentaCajero').textContent = cabecera.cajero || '-';
-            document.getElementById('detVentaFecha').textContent = cabecera.fecha || '-';
-            if (cabecera.total !== undefined) {
-                document.getElementById('detVentaTotal').textContent = formatMoney(cabecera.total);
-            }
-        }
+        const detalle = res.data || [];
+        const cabecera = res.meta || {};
+
+        if (cabecera.cajero) document.getElementById('detVentaCajero').textContent = cabecera.cajero;
+        if (cabecera.fecha) document.getElementById('detVentaFecha').textContent = cabecera.fecha;
+        if (cabecera.total) document.getElementById('detVentaTotal').textContent = formatMoney(cabecera.total);
 
         const items = detalle || [];
         if (!items.length) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin detalle recibido (backend pendiente)</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Sin detalle recibido</td></tr>';
             return;
         }
         tbody.innerHTML = items.map(item => `
             <tr>
                 <td>${item.nombre || 'Producto'}</td>
-                <td class="text-center">${item.cantidad}</td>
-                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
-                <td class="text-end">${formatMoney(item.subtotal)}</td>
+                <td style="text-align:center;">${item.cantidad}</td>
+                <td style="text-align:right;">${formatMoney(item.precio_unitario)}</td>
+                <td style="text-align:right;">${formatMoney(item.subtotal)}</td>
             </tr>
         `).join('');
     } catch (err) {
         console.error('Error al cargar detalle de venta', err);
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el detalle (backend pendiente)</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#f85149;">No se pudo cargar el detalle</td></tr>';
     }
 }
 
 // Cargar detalle de venta para mostrar en el modal (requiere backend que acepte folio)
-async function cargarDetalleVenta(folio) {
+async function cargarDetalleVenta(ventaId) {
     const tbody = document.getElementById('devDetalleBody');
     try {
-        const resp = await fetch(`actions/reportes_get.php?action=detalle_venta&folio=${folio}`);
+        const resp = await fetch(`actions/reportes_get.php?action=detalle_venta&venta_id=${ventaId}`);
         const res = await resp.json();
         if (!res.success) throw new Error(res.message || 'Sin respuesta');
         const detalles = res.data || [];
         if (!detalles.length) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin detalle recibido (backend pendiente)</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Sin detalle recibido</td></tr>';
             return;
         }
         tbody.innerHTML = detalles.map(item => `
             <tr>
                 <td>${item.nombre || 'Producto'}</td>
-                <td class="text-center">${item.cantidad}</td>
-                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
-                <td class="text-end">${formatMoney(item.subtotal)}</td>
+                <td style="text-align:center;">${item.cantidad}</td>
+                <td style="text-align:right;">${formatMoney(item.precio_unitario)}</td>
+                <td style="text-align:right;">${formatMoney(item.subtotal)}</td>
             </tr>
         `).join('');
     } catch (err) {
         console.error('Error al cargar detalle de venta', err);
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el detalle (backend pendiente)</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#f85149;">No se pudo cargar el detalle</td></tr>';
     }
 }
 
@@ -248,10 +244,9 @@ async function verDetallesDevolucion(folio) {
     document.getElementById('detDevCajero').textContent = '-';
     document.getElementById('detDevFecha').textContent = '-';
     document.getElementById('detDevTotal').textContent = '-';
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Cargando detalle...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Cargando detalle...</td></tr>';
 
-    const modal = new bootstrap.Modal(document.getElementById('modalDetalleDevolucion'));
-    modal.show();
+    toggleModal('modalDetalleDevolucion', true);
 
     try {
         const resp = await fetch(`actions/reportes_get.php?action=detalle_devolucion&folio=${folio}`);
@@ -270,20 +265,20 @@ async function verDetallesDevolucion(folio) {
 
         const items = detalle || [];
         if (!items.length) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Sin detalle recibido (backend pendiente)</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Sin detalle recibido</td></tr>';
             return;
         }
         tbody.innerHTML = items.map(item => `
             <tr>
                 <td>${item.nombre || 'Producto'}</td>
-                <td class="text-center">${item.cantidad}</td>
-                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
-                <td class="text-end">${formatMoney(item.subtotal)}</td>
+                <td style="text-align:center;">${item.cantidad}</td>
+                <td style="text-align:right;">${formatMoney(item.precio_unitario)}</td>
+                <td style="text-align:right;">${formatMoney(item.subtotal)}</td>
             </tr>
         `).join('');
     } catch (err) {
         console.error('Error al cargar detalle de devolución', err);
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">No se pudo cargar el detalle (backend pendiente)</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#f85149;">No se pudo cargar el detalle</td></tr>';
     }
 }
 
@@ -299,8 +294,8 @@ async function generarReporteDevoluciones(start, end) {
     const datos = res.data;
     datosActuales = datos;
     
-    document.getElementById('tituloReporte').textContent = '🔄 Reporte de Devoluciones';
-    document.getElementById('resumenStats').style.display = 'flex';
+    document.getElementById('tituloReporte').innerHTML = '<i class="fas fa-undo"></i><span>Reporte de Devoluciones</span>';
+    document.getElementById('resumenStats').style.display = 'grid';
     document.getElementById('statVentas').textContent = datos.length;
     const totalDevoluciones = datos.reduce((sum, d) => sum + parseFloat(d.total), 0);
     document.getElementById('statIngresos').textContent = formatMoney(totalDevoluciones);
@@ -312,13 +307,13 @@ async function generarReporteDevoluciones(start, end) {
         <th>Folio Venta</th>
         <th>Fecha</th>
         <th>Cajero</th>
-        <th class="text-end">Total</th>
-        <th class="text-center">Acciones</th>
+        <th style="text-align:right;">Total</th>
+        <th style="text-align:center;">Acciones</th>
     `;
     
     let html = '';
     if (datos.length === 0) {
-        html = '<tr><td colspan="6" class="text-center">No hay devoluciones en este rango</td></tr>';
+        html = '<tr><td colspan="6" style="text-align:center; padding: 24px; color:#8b949e;">No hay devoluciones en este rango</td></tr>';
     } else {
         datos.forEach(dev => {
             html += `
@@ -327,13 +322,12 @@ async function generarReporteDevoluciones(start, end) {
                     <td>${dev.venta_folio || '-'}</td>
                     <td>${dev.fecha}</td>
                     <td>${dev.cajero || '-'}</td>
-                    <td class="text-end"><strong>${formatMoney(dev.total)}</strong></td>
-                    <td class="text-center">
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="dropdown">⋮</button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="verDetallesDevolucion('${dev.folio}'); return false;">📄 Ver Detalles</a></li>
-                            </ul>
+                    <td style="text-align:right;"><strong>${formatMoney(dev.total)}</strong></td>
+                    <td style="text-align:center;">
+                        <div class="action-group">
+                            <button class="action-btn" title="Ver detalles" onclick="verDetallesDevolucion('${dev.folio}')">
+                                <i class="fas fa-receipt"></i>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -343,4 +337,10 @@ async function generarReporteDevoluciones(start, end) {
     
     document.getElementById('bodyReporte').innerHTML = html;
     document.getElementById('infoRegistros').textContent = `${datos.length} registros encontrados`;
+}
+
+function toggleModal(id, show = true) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.style.display = show ? 'flex' : 'none';
 }

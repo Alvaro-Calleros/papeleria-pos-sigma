@@ -296,9 +296,39 @@ require_once 'includes/auth_admin.php';
         </div>
     </div>
 
+    <!-- Modal de confirmación de logout -->
+    <div class="modal-backdrop" id="confirmLogoutModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-sign-out-alt" style="color: #f85149;"></i>
+                    <span>Cerrar Sesión</span>
+                </h3>
+                <button onclick="closeLogoutModal()" style="all: unset; cursor: pointer; font-size: 22px; color: #8b949e; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin: 0; color: #c9d1d9;">¿Estás seguro de que deseas cerrar sesión?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeLogoutModal()">Cancelar</button>
+                <button class="btn btn-danger" type="button" onclick="confirmLogout()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/productos.js"></script>
     <script>
         function logout() {
+            document.getElementById('confirmLogoutModal').style.display = 'flex';
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('confirmLogoutModal').style.display = 'none';
+        }
+
+        function confirmLogout() {
             window.location.href = 'actions/logout.php';
         }
 
