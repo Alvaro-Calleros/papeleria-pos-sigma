@@ -19,7 +19,7 @@ try {
             $start = $start_date . ' 00:00:00';
             $end = $end_date . ' 23:59:59';
 
-            $stmt = $conn->prepare("SELECT v.folio, v.fecha, v.total, u.nombre as cajero 
+            $stmt = $conn->prepare("SELECT v.id as venta_id, v.folio, v.fecha, v.total, u.nombre as cajero 
                                   FROM ventas v 
                                   INNER JOIN usuarios u ON v.usuario_id = u.id 
                                   WHERE v.fecha BETWEEN ? AND ? 
@@ -54,6 +54,19 @@ try {
             
         case 'detalle_venta':
              $venta_id = $_GET['venta_id'] ?? 0;
+             $folio = $_GET['folio'] ?? '';
+
+             if ($venta_id == 0 && !empty($folio)) {
+                 $stmt = $conn->prepare("SELECT id FROM ventas WHERE folio = ?");
+                 $stmt->bind_param('s', $folio);
+                 $stmt->execute();
+                 $res = $stmt->get_result();
+                 if ($row = $res->fetch_assoc()) {
+                     $venta_id = $row['id'];
+                 }
+                 $stmt->close();
+             }
+
              if ($venta_id > 0) {
                  $stmt = $conn->prepare("SELECT p.nombre, vd.cantidad, vd.precio_unitario, vd.subtotal 
                                        FROM ventas_detalle vd 
@@ -66,6 +79,98 @@ try {
                  $stmt->close();
              }
              break;
+
+        case 'devoluciones_rango':
+            $start_date = $_GET['start'] ?? date('Y-m-d');
+            $end_date = $_GET['end'] ?? date('Y-m-d');
+            $start = $start_date . ' 00:00:00';
+            $end = $end_date . ' 23:59:59';
+
+            $stmt = $conn->prepare("SELECT d.folio, v.folio as venta_folio, d.fecha, u.nombre as cajero, d.total 
+                                  FROM devoluciones d 
+                                  INNER JOIN ventas v ON d.venta_id = v.id 
+                                  INNER JOIN usuarios u ON d.usuario_id = u.id 
+                                  WHERE d.fecha BETWEEN ? AND ? 
+                                  ORDER BY d.fecha DESC");
+            $stmt->bind_param('ss', $start, $end);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+            $stmt->close();
+            break;
+
+        case 'detalle_devolucion':
+            $devolucion_id = $_GET['devolucion_id'] ?? 0;
+            $folio = $_GET['folio'] ?? '';
+
+            if ($devolucion_id == 0 && !empty($folio)) {
+                $stmt = $conn->prepare("SELECT id FROM devoluciones WHERE folio = ?");
+                $stmt->bind_param('s', $folio);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                if ($row = $res->fetch_assoc()) {
+                    $devolucion_id = $row['id'];
+                }
+                $stmt->close();
+            }
+
+            if ($devolucion_id > 0) {
+                // Cabecera
+                $stmt = $conn->prepare("SELECT d.folio, v.folio as venta_folio, u.nombre as cajero, d.fecha, d.total 
+                                      FROM devoluciones d 
+                                      INNER JOIN ventas v ON d.venta_id = v.id 
+                                      INNER JOIN usuarios u ON d.usuario_id = u.id 
+                                      WHERE d.id = ?");
+                $stmt->bind_param('i', $devolucion_id);
+                $stmt->execute();
+                $cabecera = $stmt->get_result()->fetch_assoc();
+                $stmt->close();
+
+                // Detalle
+                $stmt = $conn->prepare("SELECT p.nombre, dd.cantidad, dd.precio_unitario, dd.subtotal 
+                                      FROM devoluciones_detalle dd 
+                                      INNER JOIN productos p ON dd.producto_id = p.id 
+                                      WHERE dd.devolucion_id = ?");
+                $stmt->bind_param('i', $devolucion_id);
+                $stmt->execute();
+                $detalle = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+                $stmt->close();
+
+                $data = ['cabecera' => $cabecera, 'detalle' => $detalle];
+            }
+            break;
+
+        case 'detalle_venta_completa':
+            $folio = $_GET['folio'] ?? '';
+            
+            if (!empty($folio)) {
+                // Cabecera
+                $stmt = $conn->prepare("SELECT v.id, v.folio, u.nombre as cajero, v.fecha, v.total 
+                                      FROM ventas v 
+                                      INNER JOIN usuarios u ON v.usuario_id = u.id 
+                                      WHERE v.folio = ?");
+                $stmt->bind_param('s', $folio);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                $cabecera = $res->fetch_assoc();
+                $stmt->close();
+
+                if ($cabecera) {
+                    $venta_id = $cabecera['id'];
+                    // Detalle
+                    $stmt = $conn->prepare("SELECT p.nombre, vd.cantidad, vd.precio_unitario, vd.subtotal 
+                                          FROM ventas_detalle vd 
+                                          INNER JOIN productos p ON vd.producto_id = p.id 
+                                          WHERE vd.venta_id = ?");
+                    $stmt->bind_param('i', $venta_id);
+                    $stmt->execute();
+                    $detalle = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+                    $stmt->close();
+
+                    $data = ['cabecera' => $cabecera, 'detalle' => $detalle];
+                }
+            }
+            break;
 
         default:
             throw new Exception("Acción no válida");
