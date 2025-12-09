@@ -92,11 +92,12 @@ body {
 }
 
 .header {
-    margin-bottom: 36px;
+    margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: row-reverse;
+    gap: 24px;
 }
 
 .page-title {
