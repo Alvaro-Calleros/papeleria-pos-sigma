@@ -1108,38 +1108,38 @@ textarea.form-control {
         font-size: 13px;
     }
 
-    /* Responsive tables - scroll horizontal */
-    .card:has(.coach-table) {
-        padding: 16px 0;
-    }
-
-    .card:has(.coach-table) .card-header {
-        padding: 0 16px 16px;
-        margin-bottom: 0;
+    /* Responsive tables */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .coach-table {
-        font-size: 13px;
-        min-width: 600px;
-        display: table;
+        font-size: 12px;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 10px 8px;
-        font-size: 12px;
-        white-space: nowrap;
+        padding: 8px 6px;
+        font-size: 11px;
     }
 
-    /* Wrapper con scroll */
-    .card .coach-table {
-        margin: 0;
-    }
-
-    /* Permitir scroll en el contenedor de la tabla */
-    .card:has(.coach-table) {
+    /* Carrito table wrapper with horizontal scroll */
+    .carrito-table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        margin: 0 -16px;
+        padding: 0 16px;
+    }
+
+    #carritoTable {
+        min-width: 600px;
+        width: 100%;
+    }
+
+    #carritoTable th,
+    #carritoTable td {
+        white-space: nowrap;
     }
 
     /* Responsive forms */
@@ -1306,16 +1306,25 @@ textarea.form-control {
         padding: 16px 0;
     }
 
-    /* Table mantiene tamaño legible */
+    /* Table even more compact */
     .coach-table {
-        font-size: 12px;
-        min-width: 550px;
+        font-size: 11px;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 8px 6px;
+        padding: 8px 5px;
         font-size: 11px;
+    }
+
+    /* Carrito table wrapper adjustments for small screens */
+    .carrito-table-wrapper {
+        margin: 0 -12px;
+        padding: 0 12px;
+    }
+
+    #carritoTable {
+        min-width: 550px;
     }
 
     /* Empty cart message */
@@ -1331,15 +1340,6 @@ textarea.form-control {
 
     #carritoBody small {
         font-size: 13px !important;
-    }
-
-    /* Card con tabla sin padding lateral para mejor scroll */
-    .card:has(.coach-table) {
-        padding: 16px 0 !important;
-    }
-
-    .card:has(.coach-table) .card-header {
-        padding: 0 16px 16px !important;
     }
 
     /* Input adjustments */
