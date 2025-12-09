@@ -753,6 +753,27 @@ textarea.form-control {
     max-height: none;
 }
 
+/* Scrollbar inside modals: match modal background to avoid black track */
+.modal-body::-webkit-scrollbar {
+    width: 10px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #161b22;
+    border-radius: 8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 8px;
+    border: 2px solid #161b22;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #1f6feb;
+    border-color: #161b22;
+}
+
 .modal-body p {
     margin: 0;
 }
