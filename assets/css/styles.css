@@ -1112,58 +1112,22 @@ textarea.form-control {
     .table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        margin: 0 -16px;
-        padding: 0 16px;
     }
 
     .coach-table {
-        min-width: 100%;
-        width: 100%;
+        min-width: 600px;
         font-size: 13px;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 10px 6px;
-        font-size: 12px;
-        white-space: nowrap;
+        padding: 10px 8px;
     }
 
-    /* Hide codigo column on mobile */
-    .coach-table th:nth-child(2),
-    .coach-table td:nth-child(2) {
-        display: none;
-    }
-
-    /* Ajustar anchos de columnas en móvil */
-    .coach-table th:nth-child(1),
-    .coach-table td:nth-child(1) {
-        width: 35%;
-        min-width: 100px;
-    }
-
-    .coach-table th:nth-child(3),
-    .coach-table td:nth-child(3) {
-        width: 20%;
-        text-align: right;
-    }
-
-    .coach-table th:nth-child(4),
-    .coach-table td:nth-child(4) {
-        width: 20%;
-        text-align: center;
-    }
-
-    .coach-table th:nth-child(5),
-    .coach-table td:nth-child(5) {
-        width: 20%;
-        text-align: right;
-    }
-
-    .coach-table th:nth-child(6),
-    .coach-table td:nth-child(6) {
-        width: 5%;
-        text-align: center;
+    /* Ajustar texto en celdas para móvil */
+    .coach-table td {
+        word-break: break-word;
+        max-width: 200px;
     }
 
     /* Responsive forms */
@@ -1332,47 +1296,24 @@ textarea.form-control {
 
     /* Table even more compact */
     .coach-table {
-        font-size: 11px;
+        min-width: 550px;
+        font-size: 12px;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 8px 3px;
-        font-size: 11px;
+        padding: 8px 6px;
     }
 
-    /* Ajustar anchos en pantallas muy pequeñas */
-    .coach-table th:nth-child(1),
-    .coach-table td:nth-child(1) {
-        width: 30%;
-        min-width: 80px;
-    }
-
-    .coach-table th:nth-child(3),
-    .coach-table td:nth-child(3) {
-        width: 22%;
-    }
-
-    .coach-table th:nth-child(4),
-    .coach-table td:nth-child(4) {
-        width: 18%;
-    }
-
-    .coach-table th:nth-child(5),
-    .coach-table td:nth-child(5) {
-        width: 25%;
-    }
-
-    .coach-table th:nth-child(6),
-    .coach-table td:nth-child(6) {
-        width: 5%;
+    .coach-table td {
+        max-width: 150px;
     }
 
     /* Empty cart message */
     #carritoBody td {
         padding: 40px 12px !important;
         font-size: 14px;
-        white-space: normal !important;
+        max-width: none !important;
     }
 
     #carritoBody p {
