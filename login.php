@@ -19,8 +19,6 @@ if (isset($_SESSION['user_id'])) {
         <div class="login-card">
             <div class="login-header">
                 <img src="assets/images/papeleria-sigma-logo.svg" alt="Papelería Sigma" class="login-logo">
-                <h1>Papelería Sigma</h1>
-                <p>Accede al punto de venta</p>
             </div>
 
             <form id="loginForm" class="login-form">
