@@ -49,10 +49,7 @@ require_once 'includes/auth_admin.php';
                         <span id="userName"><?= htmlspecialchars($_SESSION['nombre']) ?></span>
                     </span>
                 </div>
-                <h1 class="page-title">
-                    <i class="fas fa-box"></i>
-                    Productos
-                </h1>
+                <h1 class="page-title">Productos</h1>
             </div>
 
             <div class="action-bar">
@@ -67,15 +64,16 @@ require_once 'includes/auth_admin.php';
 
             <!-- Búsqueda y filtros -->
             <div class="card" style="margin-bottom: 24px;">
-                <div class="card-header" style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-filter" style="color: #58a6ff;"></i>
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 500;">Buscar</h3>
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-search"></i>
+                        Buscar
+                    </h3>
                 </div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
                         <div class="form-group">
                             <label for="searchInput" class="form-label">
-                                <i class="fas fa-search"></i>
                                 Buscar producto
                             </label>
                             <input type="text" class="form-control" id="searchInput" 
@@ -83,7 +81,6 @@ require_once 'includes/auth_admin.php';
                         </div>
                         <div class="form-group">
                             <label for="filterActivo" class="form-label">
-                                <i class="fas fa-toggle-on"></i>
                                 Estado
                             </label>
                             <select class="form-control" id="filterActivo">
@@ -105,8 +102,10 @@ require_once 'includes/auth_admin.php';
             <!-- Tabla de productos -->
             <div class="card">
                 <div class="card-header">
-                    <i class="fas fa-table"></i>
-                    Listado
+                    <h3 class="card-title">
+                        <i class="fas fa-table"></i>
+                        Listado
+                    </h3>
                 </div>
                 <div class="card-body" style="padding: 0; overflow-x: auto;">
                     <table class="coach-table">
