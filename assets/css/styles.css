@@ -714,11 +714,11 @@ textarea.form-control {
     padding: 20px 28px;
     border-top: 1px solid #30363d;
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: flex-end;
 }
 
-.modal-btn {
+.modal-footer .btn {
     all: unset;
     box-sizing: border-box;
     font-family: inherit;
@@ -727,48 +727,34 @@ textarea.form-control {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: 10px 16px;
-    min-width: 110px;
+    width: 140px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    flex-shrink: 0;
 }
 
-.btn-secondary {
-    background: transparent;
+.modal-footer .btn-secondary {
+    background: #21262d;
     color: #c9d1d9;
-    border: 1px solid #30363d;
+    box-shadow: inset 0 0 0 1px #30363d;
 }
 
-.btn-secondary:hover {
-    background: #1c2128;
-    border-color: #58a6ff;
+.modal-footer .btn-secondary:hover {
+    background: #30363d;
+    box-shadow: inset 0 0 0 1px #58a6ff;
     color: #79c0ff;
 }
 
-.btn-primary {
+.modal-footer .btn-primary {
     background: #58a6ff;
     color: #0d1117;
-    border: 1px solid #58a6ff;
 }
 
-.btn-primary:hover {
+.modal-footer .btn-primary:hover {
     background: #79c0ff;
-    border-color: #79c0ff;
-    box-shadow: 0 0 12px rgba(88, 166, 255, 0.25);
-}
-
-.btn-danger {
-    background: #f85149;
-    color: #ffffff;
-    border: 1px solid #f85149;
-}
-
-.btn-danger:hover {
-    background: #ff6f66;
-    border-color: #ff6f66;
-    box-shadow: 0 0 12px rgba(248, 81, 73, 0.25);
+    box-shadow: 0 0 16px rgba(88, 166, 255, 0.3);
 }
 
 @media (max-width: 1200px) {
