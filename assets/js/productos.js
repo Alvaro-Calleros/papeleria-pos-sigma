@@ -65,7 +65,16 @@ async function cargarProductos(page = 1) {
         `;
 
         const response = await fetch(`actions/productos_list.php?${params.toString()}`);
-        const data = await response.json();
+        // Intentar parsear JSON; si viene HTML/PHP error, mostrar el texto bruto para depurar
+        const raw = await response.text();
+        let data;
+        try {
+            data = JSON.parse(raw);
+        } catch (parseError) {
+            console.error('Respuesta no JSON del backend:', raw);
+            showAlert('Error del servidor: ' + raw.substring(0, 200), 'danger');
+            return;
+        }
 
         if (!data.success) {
             showAlert(data.message || 'Error al cargar productos', 'danger');
