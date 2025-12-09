@@ -240,61 +240,88 @@ async function eliminarItem(index) {
 
 // Limpiar carrito
 async function limpiarCarrito() {
-    if (!confirm('¿Seguro que desea vaciar el carrito?')) return;
-    
-    try {
-        const response = await fetch('actions/ventas_clear.php', { method: 'POST' });
-        const data = await response.json();
-        
-        if (data.success) {
-            renderCarrito(data);
-            showAlert('Carrito vaciado', 'info');
-            document.getElementById('barcodeInput').focus();
+    showConfirmModal('¿Seguro que desea vaciar el carrito?', async () => {
+        try {
+            const response = await fetch('actions/ventas_clear.php', { method: 'POST' });
+            const data = await response.json();
+            
+            if (data.success) {
+                renderCarrito(data);
+                showAlert('Carrito vaciado', 'info');
+                document.getElementById('barcodeInput').focus();
+            }
+        } catch (error) {
+            console.error(error);
         }
-    } catch (error) {
-        console.error(error);
-    }
+    });
 }
 
 // Confirmar venta
+// Variable para guardar la función pendiente del modal
+let pendingConfirmCallback = null;
+
+// Mostrar modal de confirmación personalizado
+function showConfirmModal(message, callback) {
+    pendingConfirmCallback = callback;
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('confirmModal').style.display = 'flex';
+    document.getElementById('confirmYesBtn').focus();
+}
+
+// Cerrar modal de confirmación
+function closeConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'none';
+    pendingConfirmCallback = null;
+}
+
+// Ejecutar callback del modal
+async function executePendingConfirm() {
+    if (pendingConfirmCallback) {
+        const callback = pendingConfirmCallback;
+        closeConfirmModal();
+        await callback();
+    }
+}
+
 async function confirmarVenta() {
     const btn = document.getElementById('confirmarBtn');
     const spinner = document.getElementById('loadingSpinner');
     
-    if (!confirm('¿Procesar venta?')) return;
-    
-    btn.disabled = true;
-    spinner.classList.remove('d-none');
-    
-    try {
-        const response = await fetch('actions/ventas_confirm.php', {
-            method: 'POST'
-        });
+    // Mostrar modal en lugar de confirm()
+    showConfirmModal('¿Procesar venta?', async () => {
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
         
-        const data = await response.json();
-        
-        if (data.success) {
-            showAlert(`Venta ${data.folio} registrada exitosamente`, 'success');
+        try {
+            const response = await fetch('actions/ventas_confirm.php', {
+                method: 'POST'
+            });
             
-            // Limpiar UI
-            actualizarCarrito(); // Esto traerá el carrito vacío
-            actualizarStats();   // Actualizar contadores del día
+            const data = await response.json();
             
-            // Abrir ticket
-            window.open(`ticket.php?venta_id=${data.venta_id}`, 'Ticket', 'width=400,height=600');
+            if (data.success) {
+                showAlert(`Venta ${data.folio} registrada exitosamente`, 'success');
+                
+                // Limpiar UI
+                actualizarCarrito(); // Esto traerá el carrito vacío
+                actualizarStats();   // Actualizar contadores del día
+                
+                // Abrir ticket
+                window.open(`ticket.php?venta_id=${data.venta_id}`, 'Ticket', 'width=400,height=600');
+                
+            } else {
+                showAlert(data.message || 'Error al procesar venta', 'danger');
+            }
             
-        } else {
-            showAlert(data.message || 'Error al procesar venta', 'danger');
+        } catch (error) {
+            console.error(error);
+            showAlert('Error de conexión', 'danger');
+        } finally {
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+            document.getElementById('barcodeInput').focus();
         }
-        
-    } catch (error) {
-        console.error(error);
-        showAlert('Error de conexión', 'danger');
-    } finally {
-        btn.disabled = false;
-        spinner.classList.add('d-none');
-        document.getElementById('barcodeInput').focus();
-    }
+    });
 }
 
 // Actualizar estadísticas del día
@@ -335,12 +362,10 @@ function showAlert(message, type) {
     const alert = document.createElement('div');
     alert.className = `alert alert-${type}`;
     alert.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-            <span>${message}</span>
-            <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+        <span>${message}</span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
     `;
     
     container.innerHTML = '';

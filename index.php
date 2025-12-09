@@ -169,6 +169,25 @@ require_once 'includes/auth_user.php';
 
     <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;"></div>
 
+    <!-- Modal de Confirmación Dark Pro -->
+    <div id="confirmModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Venta</h3>
+                <button class="modal-close" onclick="closeConfirmModal()" title="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="btn btn-primary" id="confirmYesBtn" onclick="executePendingConfirm()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/pos.js"></script>
 </body>
 </html>

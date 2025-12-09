@@ -104,7 +104,10 @@ closeConnection($conn);
         }
         
         .header .logo {
-            font-size: 20px;
+            width: 40mm;
+            height: auto;
+            margin: 0 auto 2mm;
+            display: block;
         }
         
         .header p {
@@ -203,8 +206,26 @@ closeConnection($conn);
 </head>
 <body>
     <div class="header">
-        <div class="logo">🌱</div>
-        <h1>PAPELERÍA SIGMA</h1>
+        <svg class="logo" viewBox="0 0 210 65" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#58a6ff;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#1f6feb;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <g transform="translate(52, 32)">
+                <circle cx="0" cy="0" r="18" fill="none" stroke="url(#blueGrad)" stroke-width="7" 
+                        stroke-dasharray="99 12" stroke-dashoffset="0" stroke-linecap="round"/>
+            </g>
+            <text x="86" y="24" font-family="Courier New, Courier, monospace" 
+                  font-size="16" font-weight="800" fill="#000" letter-spacing="0.2">
+                Papelería
+            </text>
+            <text x="86" y="50" font-family="Courier New, Courier, monospace" 
+                  font-size="25" font-weight="800" fill="url(#blueGrad)" letter-spacing="0.2">
+                Sigma
+            </text>
+        </svg>
         <p>Calle Ejemplo #123, Col. Centro</p>
         <p>Tel: (123) 456-7890</p>
         <p>RFC: PSI123456ABC</p>
@@ -263,16 +284,16 @@ closeConnection($conn);
     <div class="footer">
         <p><strong>¡GRACIAS POR SU COMPRA!</strong></p>
         <p>Conserve su ticket</p>
-        <p>🌱 Comprometidos con el medio ambiente 🌱</p>
+        <p>www.papeleriasigma.com</p>
     </div>
     
     <!-- Botones (solo en pantalla) -->
     <div class="no-print">
         <button class="btn-print" onclick="window.print()">
-            🖨️ Imprimir Ticket
+            Imprimir Ticket
         </button>
         <button class="btn-close" onclick="window.close()">
-            ✖️ Cerrar
+            Cerrar
         </button>
     </div>
 </body>
