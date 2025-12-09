@@ -131,7 +131,7 @@ require_once 'includes/auth_user.php';
                             <span id="totalDisplay">$0.00</span>
                         </div>
 
-                        <button class="btn-primary" id="confirmarBtn" onclick="confirmarVenta()">
+                        <button class="btn-primary" id="confirmarBtn" onclick="confirmarVenta()" disabled>
                             <i class="fas fa-check-circle"></i>
                             Confirmar Venta
                         </button>
