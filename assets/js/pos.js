@@ -127,11 +127,10 @@ function renderCarrito(data) {
     // Renderizar tabla
     if (carrito.length === 0) {
         tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-muted py-5">
-                    <div class="logo-emoji" style="font-size: 3rem; opacity: 0.3;">🌱</div>
-                    <p class="mt-2">El carrito está vacío</p>
-                    <small>Escanee productos para comenzar</small>
+            <tr style="background: transparent; border: none;">
+                <td colspan="6" style="padding: 60px 16px; text-align: center; color: #8b949e; border-radius: 0; background: transparent;">
+                    <p style="margin: 0 0 8px 0; color: #c9d1d9; font-weight: 600; font-size: 16px;">El carrito está vacío</p>
+                    <small style="color: #8b949e;">Escanee productos para comenzar</small>
                 </td>
             </tr>
         `;
