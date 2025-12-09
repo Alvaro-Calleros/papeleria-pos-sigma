@@ -370,14 +370,6 @@ body {
     box-shadow: none;
 }
 
-.action-bar .btn-primary,
-.card .btn-primary {
-    width: 100%;
-    padding: 18px;
-    margin-top: 24px;
-    font-size: 16px;
-}
-
 .btn-secondary {
     width: 100%;
     padding: 16px;

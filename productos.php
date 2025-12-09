@@ -52,97 +52,81 @@ require_once 'includes/auth_admin.php';
                 <h1 class="page-title">Productos</h1>
             </div>
 
-            <div style="display: flex; gap: 28px;">
-                <div style="flex: 1;">
-                    <!-- Búsqueda y filtros -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-search"></i>
-                                Buscar
-                            </h3>
+            <!-- Búsqueda y filtros -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-search"></i>
+                        Buscar
+                    </h3>
+                    <button class="btn-icon" onclick="openModalProducto()" title="Nuevo Producto" style="all: unset; cursor: pointer; padding: 8px 16px; background: #1f6feb; color: white; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; transition: all 0.2s;">
+                        <i class="fas fa-plus"></i>
+                        Nuevo
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: flex-end;">
+                        <div class="form-group" style="margin: 0;">
+                            <label for="searchInput" class="form-label">
+                                Producto
+                            </label>
+                            <input type="text" class="form-control" id="searchInput" 
+                                   placeholder="Nombre o código...">
                         </div>
-                        <div class="card-body">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: flex-end;">
-                                <div class="form-group" style="margin: 0;">
-                                    <label for="searchInput" class="form-label">
-                                        Producto
-                                    </label>
-                                    <input type="text" class="form-control" id="searchInput" 
-                                           placeholder="Nombre o código...">
-                                </div>
-                                <div class="form-group" style="margin: 0;">
-                                    <label for="filterActivo" class="form-label">
-                                        Estado
-                                    </label>
-                                    <select class="form-control" id="filterActivo">
-                                        <option value="todos">Todos</option>
-                                        <option value="1" selected>Activos</option>
-                                        <option value="0">Inactivos</option>
-                                    </select>
-                                </div>
-                                <button class="btn-primary" onclick="buscarProductos()" style="width: 100%; padding: 10px 24px; font-size: 14px;">
-                                    <i class="fas fa-search"></i>
-                                    Buscar
-                                </button>
-                            </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label for="filterActivo" class="form-label">
+                                Estado
+                            </label>
+                            <select class="form-control" id="filterActivo">
+                                <option value="todos">Todos</option>
+                                <option value="1" selected>Activos</option>
+                                <option value="0">Inactivos</option>
+                            </select>
                         </div>
-                    </div>
-
-                    <!-- Tabla de productos -->
-                    <div class="card" style="margin-top: 28px;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-list"></i>
-                                Listado
-                            </h3>
-                        </div>
-                        <div class="card-body" style="padding: 0; overflow-x: auto;">
-                            <table class="coach-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 60px;">ID</th>
-                                        <th style="width: 80px;">Imagen</th>
-                                        <th>Nombre</th>
-                                        <th style="width: 140px;">Código</th>
-                                        <th style="width: 100px; text-align: right;">P. Compra</th>
-                                        <th style="width: 100px; text-align: right;">P. Venta</th>
-                                        <th style="width: 80px; text-align: center;">Stock</th>
-                                        <th style="width: 100px;">Estado</th>
-                                        <th style="width: 160px; text-align: center;">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="productosBody">
-                                    <tr>
-                                        <td colspan="9" style="text-align: center; padding: 60px 20px;">
-                                            <div class="spinner-custom"></div>
-                                            <p style="color: #8b949e; margin-top: 16px;">Cargando productos...</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="card-footer" style="display: flex; justify-content: center;">
-                            <div id="pagination" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <!-- Se llena dinámicamente -->
-                            </div>
-                        </div>
+                        <button class="btn-primary" onclick="buscarProductos()" style="width: auto; padding: 10px 24px; font-size: 14px; margin-top: 0;">
+                            <i class="fas fa-search"></i>
+                            Buscar
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <div style="width: 320px;">
-                    <!-- Panel de acciones -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-plus-circle"></i>
-                                Acciones
-                            </h3>
-                        </div>
-                        <button class="btn-primary" onclick="openModalProducto()">
-                            <i class="fas fa-plus"></i>
-                            Nuevo Producto
-                        </button>
+            <!-- Tabla de productos -->
+            <div class="card" style="margin-top: 28px;">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-list"></i>
+                        Listado
+                    </h3>
+                </div>
+                <div class="card-body" style="padding: 0; overflow-x: auto;">
+                    <table class="coach-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">ID</th>
+                                <th style="width: 80px;">Imagen</th>
+                                <th>Nombre</th>
+                                <th style="width: 140px;">Código</th>
+                                <th style="width: 100px; text-align: right;">P. Compra</th>
+                                <th style="width: 100px; text-align: right;">P. Venta</th>
+                                <th style="width: 80px; text-align: center;">Stock</th>
+                                <th style="width: 100px;">Estado</th>
+                                <th style="width: 160px; text-align: center;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productosBody">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 60px 20px;">
+                                    <div class="spinner-custom"></div>
+                                    <p style="color: #8b949e; margin-top: 16px;">Cargando productos...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer" style="display: flex; justify-content: center;">
+                    <div id="pagination" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <!-- Se llena dinámicamente -->
                     </div>
                 </div>
             </div>
