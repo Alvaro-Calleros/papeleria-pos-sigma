@@ -34,8 +34,8 @@ try {
     // Vamos a usar un formato V-YYYYMMDD-ID (despues del insert) o simplemente V-TIMESTAMP.
     $folio = 'V-' . date('YmdHis') . '-' . rand(100, 999);
 
-    $stmt = $conn->prepare("INSERT INTO ventas (folio, usuario_id, total, iva, fecha) VALUES (?, ?, ?, ?, NOW())");
-    $stmt->bind_param('sidd', $folio, $usuario_id, $total, $iva);
+    $stmt = $conn->prepare("INSERT INTO ventas (folio, usuario_id, subtotal, iva, total, fecha) VALUES (?, ?, ?, ?, ?, NOW())");
+    $stmt->bind_param('siddd', $folio, $usuario_id, $subtotal, $iva, $total);
     $stmt->execute();
     $venta_id = $conn->insert_id;
     $stmt->close();
