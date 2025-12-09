@@ -289,6 +289,29 @@ body {
     color: #c9d1d9;
 }
 
+select.coach-input {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2358a6ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 36px;
+    cursor: pointer;
+}
+
+select.coach-input option {
+    background: #161b22;
+    color: #c9d1d9;
+}
+
+select.coach-input option:checked {
+    background: linear-gradient(#1f6feb, #1f6feb);
+    background-color: #1f6feb;
+    color: #ffffff;
+}
+
 textarea.form-control {
     resize: vertical;
     min-height: 100px;
