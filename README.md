@@ -1,8 +1,21 @@
-# Papelería POS - Sistema de Punto de Venta
+# 🌱 Papelería Sigma - Sistema POS
 
-## Requisitos
-- XAMPP (PHP 7.4+, MySQL 5.7+)
-- Navegador web moderno
+Sistema de Punto de Venta moderno con diseño Dark Pro profesional para papelería.
+
+## ✨ Características Principales
+
+- 🎨 **Diseño Dark Pro** - Interfaz moderna inspirada en GitHub Dark
+- 🛒 **POS Completo** - Carrito de ventas con escaneo de códigos de barras
+- 📦 **Gestión de Productos** - CRUD completo con imágenes
+- 📊 **Reportes** - Estadísticas y exportación a CSV
+- 🔐 **Sistema de Roles** - Admin y Operador con permisos diferenciados
+- 🖨️ **Tickets 80×40mm** - Impresión térmica optimizada
+- 🎯 **Sin Dependencias** - No requiere Bootstrap, JavaScript vanilla puro
+
+## 📋 Requisitos
+
+- XAMPP (PHP 8.0+, MySQL 8.0+)
+- Navegador web moderno (Chrome 90+, Firefox 88+, Safari 14+)
 - Lector de código de barras USB (opcional)
 - Impresora térmica 80×40mm (opcional)
 
@@ -125,18 +138,61 @@ git push origin feature/backend/ventas-transac
 ### Reportes
 - `GET /actions/export_csv.php` - Exportar a CSV
 
-## Checklist de Integración
+## ✅ Estado de Desarrollo
 
-- [ ] Login funcional con roles admin/operador
-- [ ] CRUD productos con imagen BLOB
-- [ ] POS con input autofocus para lector
-- [ ] Confirmar venta con transacción (BEGIN/COMMIT/ROLLBACK)
-- [ ] Validar stock insuficiente
-- [ ] Devoluciones con límite de cantidad vendida
-- [ ] Ticket 80×40mm imprime correctamente
-- [ ] Reportes A4 con paginación
-- [ ] Export CSV con BOM UTF-8
+### Completado
+- [x] Login funcional con roles admin/operador
+- [x] CRUD productos con imagen BLOB
+- [x] POS con input autofocus para lector
+- [x] Confirmar venta con transacción (BEGIN/COMMIT/ROLLBACK)
+- [x] Validar stock insuficiente
+- [x] Devoluciones con límite de cantidad vendida
+- [x] Ticket 80×40mm imprime correctamente
+- [x] Reportes A4 con paginación
+- [x] Export CSV con BOM UTF-8
+- [x] **Diseño Dark Pro completo** ✨
+- [x] **Sistema de alertas custom sin Bootstrap**
+- [x] **Logo SVG profesional**
+- [x] **Sidebar navigation**
 
-## Soporte
+### En Desarrollo
+- [ ] Módulo de compras (ingreso de stock)
+- [ ] Dashboard con gráficas
+- [ ] PWA para uso offline
+
+## 🎨 Paleta de Colores Dark Pro
+
+```
+Background:     #0d1117
+Cards/Sidebar:  #161b22
+Borders:        #30363d
+Primary Blue:   #58a6ff
+Secondary Blue: #1f6feb
+Success Green:  #2ea043
+Danger Red:     #f85149
+Text:           #c9d1d9
+Muted:          #8b949e
+```
+
+## 📚 Documentación
+
+- **Frontend:** `docs/FRONTEND-DOCUMENTACION.md` (642 líneas)
+- **Backend:** `backend.md`
+- **Base de Datos:** `sql/documentacion.md`
+
+## 🤝 Equipo
+
+- **Líder:** Álvaro
+- **Frontend:** Abraham
+- **Backend:** Luisito, Arturo
+- **Base de Datos:** Santi, Fer
+- **Hardware:** Nolberto
+
+## 📞 Soporte
 
 Para dudas técnicas, abrir issue en GitHub o consultar con el líder del proyecto.
+
+---
+
+**Última actualización:** Diciembre 8, 2024  
+**Versión:** 2.0.0 - Dark Pro Edition
