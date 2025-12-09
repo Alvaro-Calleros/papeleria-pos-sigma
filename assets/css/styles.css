@@ -218,17 +218,16 @@ body {
 }
 
 .coach-table tbody tr {
-    background: #161b22;
+    background: #0d1117;
     border: 1px solid #30363d;
     border-radius: 12px;
     transition: all 0.2s ease;
 }
 
 .coach-table tbody tr:hover {
-    background: #21262d;
+    background: #0d1117;
     border-color: #58a6ff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
 }
 
 .coach-table tbody td {
