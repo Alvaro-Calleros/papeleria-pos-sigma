@@ -167,7 +167,7 @@ require_once 'includes/auth_user.php';
         </main>
     </div>
 
-    <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;"></div>
+    <div id="alertContainer" class="alert-container"></div>
 
     <!-- Modal de Confirmación Dark Pro -->
     <div id="confirmModal" class="modal-backdrop" style="display: none;">

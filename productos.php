@@ -133,7 +133,7 @@ require_once 'includes/auth_admin.php';
         </main>
     </div>
 
-    <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;"></div>
+    <div id="alertContainer" class="alert-container"></div>
 
     <!-- Modal Producto -->
     <div class="modal-backdrop" id="modalProducto" style="display: none;">

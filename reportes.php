@@ -106,7 +106,7 @@ require_once 'includes/auth_admin.php';
         </div>
 
         <!-- Mensajes -->
-        <div id="alertContainer" class="no-print"></div>
+        <div id="alertContainer" class="no-print alert-container"></div>
 
         <!-- Resultados -->
         <div class="card fade-in-up">

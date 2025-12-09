@@ -559,6 +559,17 @@ textarea.form-control {
 }
 
 /* Alert styles - Dark Pro */
+.alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 4000 !important;
+}
+
 .alert {
     padding: 16px 20px;
     border-radius: 8px;
