@@ -49,97 +49,107 @@ require_once 'includes/auth_admin.php';
                         <span id="userName"><?= htmlspecialchars($_SESSION['nombre']) ?></span>
                     </span>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 24px;">
-                    <h1 class="page-title" style="margin: 0;">Productos</h1>
-                    <button class="btn-primary" onclick="openModalProducto()" style="width: auto; padding: 10px 24px; margin-top: 0; font-size: 14px;">
-                        <i class="fas fa-plus"></i>
-                        Nuevo Producto
-                    </button>
-                </div>
+                <h1 class="page-title">Productos</h1>
             </div>
 
-            <!-- Mensajes -->
-            <div id="alertContainer"></div>
-
-            <!-- Búsqueda y filtros -->
-            <div class="card" style="margin-bottom: 24px;">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-search"></i>
-                        Buscar
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
-                        <div class="form-group">
-                            <label for="searchInput" class="form-label">
-                                Buscar producto
-                            </label>
-                            <input type="text" class="form-control" id="searchInput" 
-                                   placeholder="Nombre o código de barras...">
-                        </div>
-                        <div class="form-group">
-                            <label for="filterActivo" class="form-label">
-                                Estado
-                            </label>
-                            <select class="form-control" id="filterActivo">
-                                <option value="todos">Todos</option>
-                                <option value="1" selected>Activos</option>
-                                <option value="0">Inactivos</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="display: flex; align-items: flex-end;">
-                            <button class="btn-primary" onclick="buscarProductos()" style="width: 100%;">
+            <div style="display: flex; gap: 28px;">
+                <div style="flex: 1;">
+                    <!-- Búsqueda y filtros -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
                                 <i class="fas fa-search"></i>
                                 Buscar
-                            </button>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: flex-end;">
+                                <div class="form-group" style="margin: 0;">
+                                    <label for="searchInput" class="form-label">
+                                        Producto
+                                    </label>
+                                    <input type="text" class="form-control" id="searchInput" 
+                                           placeholder="Nombre o código...">
+                                </div>
+                                <div class="form-group" style="margin: 0;">
+                                    <label for="filterActivo" class="form-label">
+                                        Estado
+                                    </label>
+                                    <select class="form-control" id="filterActivo">
+                                        <option value="todos">Todos</option>
+                                        <option value="1" selected>Activos</option>
+                                        <option value="0">Inactivos</option>
+                                    </select>
+                                </div>
+                                <button class="btn-primary" onclick="buscarProductos()" style="width: 100%; padding: 10px 24px; font-size: 14px;">
+                                    <i class="fas fa-search"></i>
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de productos -->
+                    <div class="card" style="margin-top: 28px;">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-list"></i>
+                                Listado
+                            </h3>
+                        </div>
+                        <div class="card-body" style="padding: 0; overflow-x: auto;">
+                            <table class="coach-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60px;">ID</th>
+                                        <th style="width: 80px;">Imagen</th>
+                                        <th>Nombre</th>
+                                        <th style="width: 140px;">Código</th>
+                                        <th style="width: 100px; text-align: right;">P. Compra</th>
+                                        <th style="width: 100px; text-align: right;">P. Venta</th>
+                                        <th style="width: 80px; text-align: center;">Stock</th>
+                                        <th style="width: 100px;">Estado</th>
+                                        <th style="width: 160px; text-align: center;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productosBody">
+                                    <tr>
+                                        <td colspan="9" style="text-align: center; padding: 60px 20px;">
+                                            <div class="spinner-custom"></div>
+                                            <p style="color: #8b949e; margin-top: 16px;">Cargando productos...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer" style="display: flex; justify-content: center;">
+                            <div id="pagination" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <!-- Se llena dinámicamente -->
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tabla de productos -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-table"></i>
-                        Listado
-                    </h3>
-                </div>
-                <div class="card-body" style="padding: 0; overflow-x: auto;">
-                    <table class="coach-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 60px;">ID</th>
-                                <th style="width: 80px;">Imagen</th>
-                                <th>Nombre</th>
-                                <th style="width: 140px;">Código Barras</th>
-                                <th style="width: 100px; text-align: right;">P. Compra</th>
-                                <th style="width: 100px; text-align: right;">P. Venta</th>
-                                <th style="width: 80px; text-align: center;">Stock</th>
-                                <th style="width: 100px;">Estado</th>
-                                <th style="width: 160px; text-align: center;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productosBody">
-                            <tr>
-                                <td colspan="9" style="text-align: center; padding: 60px 20px;">
-                                    <div class="spinner-custom"></div>
-                                    <p style="color: #8b949e; margin-top: 16px;">Cargando productos...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card-footer" style="display: flex; justify-content: center;">
-                    <div id="pagination" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <!-- Se llena dinámicamente -->
+                <div style="width: 320px;">
+                    <!-- Panel de acciones -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-plus-circle"></i>
+                                Acciones
+                            </h3>
+                        </div>
+                        <button class="btn-primary" onclick="openModalProducto()">
+                            <i class="fas fa-plus"></i>
+                            Nuevo Producto
+                        </button>
                     </div>
                 </div>
             </div>
         </main>
     </div>
-    </div>
+
+    <div id="alertContainer" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;"></div>
 
     <!-- Modal Producto -->
     <div class="modal-backdrop" id="modalProducto" style="display: none;">
