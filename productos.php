@@ -51,7 +51,7 @@ require_once 'includes/auth_admin.php';
                 </div>
                 <h1 class="page-title">
                     <i class="fas fa-box"></i>
-                    Gestión de Productos
+                    Productos
                 </h1>
             </div>
 
@@ -69,7 +69,7 @@ require_once 'includes/auth_admin.php';
             <div class="card" style="margin-bottom: 24px;">
                 <div class="card-header" style="display: flex; align-items: center; gap: 12px;">
                     <i class="fas fa-filter" style="color: #58a6ff;"></i>
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 500;">Filtros de Búsqueda</h3>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 500;">Buscar</h3>
                 </div>
                 <div class="card-body">
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
@@ -106,7 +106,7 @@ require_once 'includes/auth_admin.php';
             <div class="card">
                 <div class="card-header">
                     <i class="fas fa-table"></i>
-                    Listado de Productos
+                    Listado
                 </div>
                 <div class="card-body" style="padding: 0; overflow-x: auto;">
                     <table class="coach-table">
