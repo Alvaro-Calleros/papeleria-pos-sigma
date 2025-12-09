@@ -195,10 +195,10 @@ require_once 'includes/auth_admin.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModalProducto()" style="all: unset; cursor: pointer; padding: 10px 16px; background: transparent; color: #c9d1d9; border: 1px solid #30363d; border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; height: 40px; min-width: 110px; gap: 6px;">
+                <button onclick="closeModalProducto()" class="btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="guardarProducto()" style="all: unset; cursor: pointer; padding: 10px 16px; background: #58a6ff; color: #0d1117; border-radius: 8px; font-size: 14px; font-weight: 700; transition: all 0.2s; display: flex; align-items: center; justify-content: center; height: 40px; min-width: 110px; gap: 6px; box-shadow: inset 0 0 0 1px #58a6ff;">
+                <button onclick="guardarProducto()" class="btn btn-primary">
                     Guardar
                 </button>
             </div>
@@ -263,10 +263,10 @@ require_once 'includes/auth_admin.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModalEditarProducto()" style="all: unset; cursor: pointer; padding: 10px 16px; background: transparent; color: #c9d1d9; border: 1px solid #30363d; border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; height: 40px; min-width: 110px; gap: 6px;">
+                <button onclick="closeModalEditarProducto()" class="btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="guardarProductoEdit()" style="all: unset; cursor: pointer; padding: 10px 16px; background: #58a6ff; color: #0d1117; border-radius: 8px; font-size: 14px; font-weight: 700; transition: all 0.2s; display: flex; align-items: center; justify-content: center; height: 40px; min-width: 110px; gap: 6px; box-shadow: inset 0 0 0 1px #58a6ff;">
+                <button onclick="guardarProductoEdit()" class="btn btn-primary">
                     Guardar cambios
                 </button>
             </div>
@@ -286,10 +286,10 @@ require_once 'includes/auth_admin.php';
                 <p id="confirmModalMessage" style="margin: 0; color: #c9d1d9; font-size: 15px; line-height: 1.6;"></p>
             </div>
             <div class="modal-footer">
-                <button onclick="closeConfirmModal()" style="all: unset; cursor: pointer; padding: 10px 16px; background: transparent; color: #c9d1d9; border: 1px solid #30363d; border-radius: 8px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; height: 40px; min-width: 110px; gap: 6px;">
+                <button onclick="closeConfirmModal()" class="btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="executePendingConfirm()" style="all: unset; cursor: pointer; padding: 10px 16px; background: #f85149; color: #fff; border-radius: 8px; font-size: 14px; font-weight: 700; transition: all 0.2s; display: flex; align-items: center; justify-content: center; height: 40px; min-width: 110px; gap: 6px; box-shadow: inset 0 0 0 1px #f85149;">
+                <button onclick="executePendingConfirm()" class="btn btn-danger">
                     Confirmar
                 </button>
             </div>
