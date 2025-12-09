@@ -49,8 +49,8 @@ try {
             throw new Exception("Tipo de archivo no permitido. Solo JPG y PNG.");
         }
         
-        if ($file['size'] > 5 * 1024 * 1024) { // 5MB
-            throw new Exception("La imagen excede el tamaño máximo de 5MB");
+        if ($file['size'] > 1 * 1024 * 1024) { // 1MB
+            throw new Exception("La imagen excede el tamaño máximo de 1MB");
         }
 
         $imagen = file_get_contents($file['tmp_name']);
