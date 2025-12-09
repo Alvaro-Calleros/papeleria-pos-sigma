@@ -137,7 +137,7 @@ require_once 'includes/auth_admin.php';
 
     <!-- Modal Producto -->
     <div class="modal-backdrop" id="modalProducto" style="display: none;">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content form-modal">
             <div class="modal-header">
                 <h3 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 10px;">
                     <i class="fas fa-plus-circle" style="color: #58a6ff;"></i>
@@ -208,7 +208,7 @@ require_once 'includes/auth_admin.php';
 
     <!-- Modal Editar Producto -->
     <div class="modal-backdrop" id="modalEditarProducto" style="display: none;">
-        <div class="modal-content" style="max-width: 700px;">
+        <div class="modal-content form-modal">
             <div class="modal-header">
                 <h3 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 10px;">
                     <i class="fas fa-edit" style="color: #58a6ff;"></i>

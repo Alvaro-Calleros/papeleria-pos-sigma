@@ -652,6 +652,25 @@ textarea.form-control {
     animation: slideUp 0.3s ease;
 }
 
+/* Form modals (productos) */
+.form-modal {
+    max-width: 560px;
+    width: 92%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-modal .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px;
+}
+
+.form-modal .modal-footer {
+    padding: 16px 24px;
+}
+
 @keyframes slideUp {
     from {
         transform: translateY(20px);
@@ -704,6 +723,7 @@ textarea.form-control {
     color: #c9d1d9;
     font-size: 15px;
     line-height: 1.5;
+    max-height: none;
 }
 
 .modal-body p {
