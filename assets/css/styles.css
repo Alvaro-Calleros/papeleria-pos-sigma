@@ -1108,10 +1108,16 @@ textarea.form-control {
         font-size: 13px;
     }
 
-    /* Responsive tables */
-    .table-wrapper {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    /* Responsive tables - NO scroll por defecto */
+    .coach-table {
+        font-size: 12px;
+        width: 100%;
+    }
+
+    .coach-table th,
+    .coach-table td {
+        padding: 10px 8px;
+        font-size: 12px;
     }
 
     /* Solo scroll horizontal en tabla del carrito */
@@ -1124,16 +1130,7 @@ textarea.form-control {
 
     .carrito-table-wrapper .coach-table {
         min-width: 600px;
-    }
-
-    .coach-table {
-        font-size: 12px;
-    }
-
-    .coach-table th,
-    .coach-table td {
-        padding: 10px 8px;
-        font-size: 12px;
+        width: 600px;
     }
 
     /* Responsive forms */
@@ -1308,17 +1305,19 @@ textarea.form-control {
 
     .carrito-table-wrapper .coach-table {
         min-width: 550px;
+        width: 550px;
     }
 
-    /* Table even more compact */
+    /* Tablas normales sin cambios en móvil */
     .coach-table {
-        font-size: 11px;
+        font-size: 12px;
+        width: 100%;
     }
 
     .coach-table th,
     .coach-table td {
-        padding: 8px 6px;
-        font-size: 11px;
+        padding: 10px 8px;
+        font-size: 12px;
     }
 
     /* Empty cart message */
