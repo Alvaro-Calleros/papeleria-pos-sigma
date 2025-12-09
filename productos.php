@@ -66,14 +66,14 @@ require_once 'includes/auth_admin.php';
                             <label for="searchInput" class="form-label">
                                 Producto
                             </label>
-                            <input type="text" class="form-control" id="searchInput" 
+                            <input type="text" class="coach-input" id="searchInput" 
                                    placeholder="Nombre o código...">
                         </div>
                         <div class="form-group" style="margin: 0;">
                             <label for="filterActivo" class="form-label">
                                 Estado
                             </label>
-                            <select class="form-control" id="filterActivo">
+                            <select class="coach-input" id="filterActivo">
                                 <option value="todos">Todos</option>
                                 <option value="1" selected>Activos</option>
                                 <option value="0">Inactivos</option>
@@ -154,37 +154,37 @@ require_once 'includes/auth_admin.php';
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
                             <label for="nombre" class="form-label">Nombre *</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                            <input type="text" class="coach-input" id="nombre" name="nombre" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="codigo_barras" class="form-label">Código de Barras *</label>
-                            <input type="text" class="form-control" id="codigo_barras" name="codigo_barras" required>
+                            <input type="text" class="coach-input" id="codigo_barras" name="codigo_barras" required>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"></textarea>
+                        <textarea class="coach-input" id="descripcion" name="descripcion" rows="3"></textarea>
                     </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
                             <label for="precio_compra" class="form-label">Precio Compra *</label>
-                            <input type="number" class="form-control" id="precio_compra" name="precio_compra" 
+                            <input type="number" class="coach-input" id="precio_compra" name="precio_compra" 
                                    step="0.01" min="0" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="precio_venta" class="form-label">Precio Venta *</label>
-                            <input type="number" class="form-control" id="precio_venta" name="precio_venta" 
+                            <input type="number" class="coach-input" id="precio_venta" name="precio_venta" 
                                    step="0.01" min="0" required>
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="imagen" class="form-label">Imagen del Producto</label>
-                        <input type="file" class="form-control" id="imagen" name="imagen" 
+                           <input type="file" class="coach-input" id="imagen" name="imagen" 
                                accept="image/jpeg,image/png,image/jpg">
                         <small style="color: #8b949e; font-size: 12px;">Máximo 5MB. Formatos: JPG, PNG</small>
                     </div>
@@ -195,10 +195,10 @@ require_once 'includes/auth_admin.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModalProducto()" style="all: unset; cursor: pointer; padding: 10px 24px; background: transparent; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; font-size: 14px; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 140px; height: 44px; flex-shrink: 0; box-shadow: inset 0 0 0 1px #30363d;">
+                <button onclick="closeModalProducto()" class="btn modal-btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="guardarProducto()" style="all: unset; cursor: pointer; padding: 10px 24px; background: #58a6ff; color: #0d1117; border-radius: 6px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 140px; height: 44px; flex-shrink: 0; box-shadow: inset 0 0 0 1px #58a6ff;">
+                <button onclick="guardarProducto()" class="btn modal-btn btn-primary">
                     Guardar
                 </button>
             </div>
@@ -225,35 +225,35 @@ require_once 'includes/auth_admin.php';
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
                             <label for="nombreEdit" class="form-label">Nombre *</label>
-                            <input type="text" class="form-control" id="nombreEdit" name="nombre" required>
+                            <input type="text" class="coach-input" id="nombreEdit" name="nombre" required>
                         </div>
 
                         <div class="form-group">
                             <label for="codigo_barras_edit" class="form-label">Código de Barras *</label>
-                            <input type="text" class="form-control" id="codigo_barras_edit" name="codigo_barras" required>
+                            <input type="text" class="coach-input" id="codigo_barras_edit" name="codigo_barras" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="descripcionEdit" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcionEdit" name="descripcion" rows="3"></textarea>
+                        <textarea class="coach-input" id="descripcionEdit" name="descripcion" rows="3"></textarea>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div class="form-group">
                             <label for="precio_compra_edit" class="form-label">Precio Compra *</label>
-                            <input type="number" class="form-control" id="precio_compra_edit" name="precio_compra" step="0.01" min="0" required>
+                            <input type="number" class="coach-input" id="precio_compra_edit" name="precio_compra" step="0.01" min="0" required>
                         </div>
 
                         <div class="form-group">
                             <label for="precio_venta_edit" class="form-label">Precio Venta *</label>
-                            <input type="number" class="form-control" id="precio_venta_edit" name="precio_venta" step="0.01" min="0" required>
+                            <input type="number" class="coach-input" id="precio_venta_edit" name="precio_venta" step="0.01" min="0" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="imagenEdit" class="form-label">Imagen del Producto</label>
-                        <input type="file" class="form-control" id="imagenEdit" name="imagen" accept="image/jpeg,image/png,image/jpg">
+                        <input type="file" class="coach-input" id="imagenEdit" name="imagen" accept="image/jpeg,image/png,image/jpg">
                         <small style="color: #8b949e; font-size: 12px;">Máximo 5MB. Formatos: JPG, PNG</small>
                     </div>
 
@@ -263,10 +263,10 @@ require_once 'includes/auth_admin.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModalEditarProducto()" style="all: unset; cursor: pointer; padding: 10px 24px; background: transparent; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; font-size: 14px; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 140px; height: 44px; flex-shrink: 0; box-shadow: inset 0 0 0 1px #30363d;">
+                <button onclick="closeModalEditarProducto()" class="btn modal-btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="guardarProductoEdit()" style="all: unset; cursor: pointer; padding: 10px 24px; background: #58a6ff; color: #0d1117; border-radius: 6px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 140px; height: 44px; flex-shrink: 0; box-shadow: inset 0 0 0 1px #58a6ff;">
+                <button onclick="guardarProductoEdit()" class="btn modal-btn btn-primary">
                     Guardar cambios
                 </button>
             </div>
@@ -286,10 +286,10 @@ require_once 'includes/auth_admin.php';
                 <p id="confirmModalMessage" style="margin: 0; color: #c9d1d9; font-size: 15px; line-height: 1.6;"></p>
             </div>
             <div class="modal-footer">
-                <button onclick="closeConfirmModal()" style="all: unset; cursor: pointer; padding: 10px 24px; background: transparent; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; font-size: 14px; font-weight: 500; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 140px; height: 44px; flex-shrink: 0; box-shadow: inset 0 0 0 1px #30363d;">
+                <button onclick="closeConfirmModal()" class="btn modal-btn btn-secondary">
                     Cancelar
                 </button>
-                <button onclick="executePendingConfirm()" style="all: unset; cursor: pointer; padding: 10px 24px; background: #f85149; color: #fff; border-radius: 6px; font-size: 14px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 140px; height: 44px; flex-shrink: 0; box-shadow: inset 0 0 0 1px #f85149;">
+                <button onclick="executePendingConfirm()" class="btn modal-btn btn-danger">
                     Confirmar
                 </button>
             </div>
