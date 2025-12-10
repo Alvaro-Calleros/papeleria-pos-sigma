@@ -1144,6 +1144,7 @@ textarea.form-control {
     .coach-table td {
         padding: 8px 6px;
         font-size: 12px;
+        vertical-align: top;
     }
 
     /* Nombre de producto con wrap en móvil */
@@ -1359,6 +1360,7 @@ textarea.form-control {
     .coach-table td {
         padding: 6px 4px;
         font-size: 11px;
+        vertical-align: top;
     }
 
     /* Nombre de producto con wrap en móviles pequeños */
