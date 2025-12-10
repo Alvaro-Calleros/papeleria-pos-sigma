@@ -72,6 +72,11 @@ require_once 'includes/auth_admin.php';
                 <span>Reportes</span>
             </div>
 
+            <div class="nav-item" onclick="window.location.href='compras.php'">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Compras</span>
+            </div>
+
             <div style="flex: 1;"></div>
 
             <div class="nav-item logout-btn" onclick="logout()">
