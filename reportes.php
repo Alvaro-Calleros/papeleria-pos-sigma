@@ -240,7 +240,7 @@ require_once 'includes/auth_admin.php';
                 </div>
 
                 <div class="alert" style="background: #161b22; border: 1px solid #30363d; color: #c9d1d9; padding: 12px 14px; border-radius: 8px;">
-                    <small><strong>Nota:</strong> Esta devolución procesará todos los productos de la venta. El inventario se actualizará automáticamente.</small>
+                    <small><strong>Nota:</strong> Selecciona los productos que deseas devolver. Los productos marcados serán devueltos y el inventario se actualizará automáticamente.</small>
                 </div>
             </div>
             <div class="modal-footer">
