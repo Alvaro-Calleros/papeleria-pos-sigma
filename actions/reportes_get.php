@@ -61,7 +61,7 @@ try {
             $start = $start_date . ' 00:00:00';
             $end = $end_date . ' 23:59:59';
 
-            $stmt = $conn->prepare("SELECT d.folio, d.fecha, d.total, v.folio AS venta_folio, u.nombre AS cajero
+            $stmt = $conn->prepare("SELECT d.id, d.folio, d.fecha, d.total, v.folio AS venta_folio, u.nombre AS cajero
                                    FROM devoluciones d
                                    LEFT JOIN ventas v ON d.venta_id = v.id
                                    LEFT JOIN usuarios u ON d.usuario_id = u.id
