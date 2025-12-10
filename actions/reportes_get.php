@@ -135,60 +135,6 @@ try {
             } else {
                 throw new Exception('Venta no encontrada');
             }
-            break;
-
-        case 'detalle_devolucion':
-            $folio = $_GET['folio'] ?? '';
-            if ($folio === '') {
-                throw new Exception('Folio de devolución requerido');
-            }
-
-            $stmt = $conn->prepare("SELECT d.folio, d.fecha, d.total, v.folio AS venta_folio, u.nombre AS cajero
-                                   FROM devoluciones d
-                                   LEFT JOIN ventas v ON d.venta_id = v.id
-                                   LEFT JOIN usuarios u ON d.usuario_id = u.id
-                                   WHERE d.folio = ? LIMIT 1");
-            $stmt->bind_param('s', $folio);
-            $stmt->execute();
-            $cabecera = $stmt->get_result()->fetch_assoc();
-            $stmt->close();
-
-            if (!$cabecera) {
-                throw new Exception('Devolución no encontrada');
-            }
-
-            $stmt = $conn->prepare("SELECT p.nombre, dd.cantidad, dd.precio_unitario, dd.subtotal
-                                   FROM devoluciones_detalle dd
-                                   INNER JOIN productos p ON dd.producto_id = p.id
-                                   WHERE dd.devolucion_id = (SELECT id FROM devoluciones WHERE folio = ? LIMIT 1)");
-            $stmt->bind_param('s', $folio);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $detalle = $result->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-
-            echo json_encode(['success' => true, 'data' => ['cabecera' => $cabecera, 'detalle' => $detalle]]);
-            closeConnection($conn);
-            return;
-
-        case 'devoluciones_rango':
-            $start_date = $_GET['start'] ?? date('Y-m-d');
-            $end_date = $_GET['end'] ?? date('Y-m-d');
-            $start = $start_date . ' 00:00:00';
-            $end = $end_date . ' 23:59:59';
-
-            $stmt = $conn->prepare("SELECT d.folio, v.folio as venta_folio, d.fecha, u.nombre as cajero, d.total 
-                                  FROM devoluciones d 
-                                  INNER JOIN ventas v ON d.venta_id = v.id 
-                                  INNER JOIN usuarios u ON d.usuario_id = u.id 
-                                  WHERE d.fecha BETWEEN ? AND ? 
-                                  ORDER BY d.fecha DESC");
-            $stmt->bind_param('ss', $start, $end);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $data = $result->fetch_all(MYSQLI_ASSOC);
-            $stmt->close();
-            break;
 
         case 'detalle_devolucion':
             $devolucion_id = $_GET['devolucion_id'] ?? 0;
