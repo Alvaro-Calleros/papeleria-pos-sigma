@@ -43,11 +43,13 @@ window.Compras = (function(){
                 }
                 
                 resultados.innerHTML = productos.map(p => `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #30363d;">
                         <div><strong>${escapeHtml(p.nombre)}</strong><br><small>${escapeHtml(p.codigo_barras || '')}</small></div>
                         <div style="text-align:right;">
-                            <div>${formatMoney(p.precio_compra || p.precio_venta)}</div>
-                            <button onclick='Compras.agregarProductoCompra(${JSON.stringify({id: p.id, nombre: p.nombre, precio: p.precio_compra || p.precio_venta})})'>Agregar</button>
+                            <div style="margin-bottom:6px;">${formatMoney(p.precio_compra || p.precio_venta)}</div>
+                            <button class="btn-primary" style="width:auto; padding:8px 18px; font-size:14px; gap:8px;" onclick='Compras.agregarProductoCompra(${JSON.stringify({id: p.id, nombre: p.nombre, precio: p.precio_compra || p.precio_venta})})'>
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
                         </div>
                     </div>
                 `).join('');
@@ -83,11 +85,21 @@ window.Compras = (function(){
             total += subtotal;
             html += `
                 <tr>
-                    <td>${escapeHtml(item.nombre)}</td>
-                    <td style="text-align:center;"><input type="number" min="1" value="${item.cantidad}" onchange="Compras.cambiarCantidad(${idx}, this.value)" style="width:64px;"></td>
+                    <td style="font-weight:700; color:#c9d1d9;">${escapeHtml(item.nombre)}</td>
+                    <td>
+                        <div class="qty-controls">
+                            <button class="qty-btn" onclick="Compras.cambiarCantidad(${idx}, item.cantidad-1)">−</button>
+                            <span class="qty-value">${item.cantidad}</span>
+                            <button class="qty-btn" onclick="Compras.cambiarCantidad(${idx}, item.cantidad+1)">+</button>
+                        </div>
+                    </td>
                     <td style="text-align:right;">${formatMoney(item.precio_unitario)}</td>
-                    <td style="text-align:right;">${formatMoney(subtotal)}</td>
-                    <td style="text-align:center;"><button onclick="Compras.eliminarItem(${idx})">Eliminar</button></td>
+                    <td style="text-align:right; font-weight:700;">${formatMoney(subtotal)}</td>
+                    <td style="text-align:center;">
+                        <button class="delete-btn" onclick="Compras.eliminarItem(${idx})" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>
             `;
         });
@@ -147,14 +159,39 @@ window.Compras = (function(){
     }
 
     function showAlert(message, type='success'){
-        const container = document.getElementById('alertContainer');
-        const el = document.createElement('div');
-        el.style.padding = '10px';
-        el.style.border = '1px solid #ddd';
-        el.style.marginTop = '8px';
-        el.textContent = message;
-        container.appendChild(el);
-        setTimeout(()=> el.remove(), 4000);
+        const alertContainer = document.getElementById('alertContainer');
+        const typeConfig = {
+            'success': { iconClass: 'fa-check-circle', color: '#2ea043', bg: '#0d1117' },
+            'danger': { iconClass: 'fa-exclamation-triangle', color: '#f85149', bg: '#0d1117' },
+            'warning': { iconClass: 'fa-exclamation-circle', color: '#d29922', bg: '#0d1117' },
+            'info': { iconClass: 'fa-info-circle', color: '#58a6ff', bg: '#0d1117' }
+        };
+        const config = typeConfig[type] || typeConfig['info'];
+        const alert = document.createElement('div');
+        alert.className = 'alert';
+        alert.style.cssText = `
+            background: ${config.bg};
+            border: 1px solid #30363d;
+            border-left: 4px solid ${config.color};
+            color: #c9d1d9;
+            padding: 16px 20px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease;
+        `;
+        alert.innerHTML = `
+            <i class="fas ${config.iconClass}" style="color: ${config.color}; font-size: 18px;"></i>
+            <span style="flex: 1;">${message}</span>
+        `;
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+        setTimeout(() => {
+            alert.style.animation = 'slideUp 0.3s ease';
+            setTimeout(() => alert.remove(), 300);
+        }, 3000);
     }
 
     // public API

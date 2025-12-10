@@ -12,6 +12,40 @@ try {
     $data = [];
 
     switch ($action) {
+                        case 'detalle_compra':
+                            $folio = $_GET['folio'] ?? '';
+                            if (!empty($folio)) {
+                                // Cabecera
+                                $stmt = $conn->prepare("SELECT c.folio, p.nombre as proveedor, c.fecha, c.total FROM compras c LEFT JOIN proveedores p ON c.proveedor_id = p.id WHERE c.folio = ?");
+                                $stmt->bind_param('s', $folio);
+                                $stmt->execute();
+                                $res = $stmt->get_result();
+                                $cabecera = $res->fetch_assoc();
+                                $stmt->close();
+                                if ($cabecera) {
+                                    // Detalle
+                                    $stmt = $conn->prepare("SELECT cd.producto_id, pr.nombre, cd.cantidad, cd.precio_unitario, cd.subtotal FROM compras_detalle cd INNER JOIN productos pr ON cd.producto_id = pr.id WHERE cd.compra_id = (SELECT id FROM compras WHERE folio = ?)");
+                                    $stmt->bind_param('s', $folio);
+                                    $stmt->execute();
+                                    $detalle = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+                                    $stmt->close();
+                                    $data = ['cabecera' => $cabecera, 'detalle' => $detalle];
+                                }
+                            }
+                            break;
+                case 'compras_rango':
+                    $start_date = $_GET['start'] ?? date('Y-m-d');
+                    $end_date = $_GET['end'] ?? date('Y-m-d');
+                    $start = $start_date . ' 00:00:00';
+                    $end = $end_date . ' 23:59:59';
+
+                    $stmt = $conn->prepare("SELECT c.folio, c.fecha, c.total, p.nombre AS proveedor FROM compras c LEFT JOIN proveedores p ON c.proveedor_id = p.id WHERE c.fecha BETWEEN ? AND ? ORDER BY c.fecha DESC");
+                    $stmt->bind_param('ss', $start, $end);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $data = $result->fetch_all(MYSQLI_ASSOC);
+                    $stmt->close();
+                    break;
         case 'ventas_rango':
             $start_date = $_GET['start'] ?? date('Y-m-d');
             $end_date = $_GET['end'] ?? date('Y-m-d');

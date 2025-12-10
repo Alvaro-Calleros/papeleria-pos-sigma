@@ -1,3 +1,125 @@
+/* Botones de exportar e imprimir responsivos en reportes */
+@media (max-width: 700px) {
+    .btn-secondary[onclick*="exportarCSV"],
+    .btn-secondary[onclick*="window.print"] {
+        font-size: 13px !important;
+        padding: 8px 10px !important;
+        min-width: 70px !important;
+        max-width: 120px !important;
+    }
+}
+/* Filtros de fecha y botón en columna en pantallas medianas */
+@media (max-width: 950px) {
+    .filtros-fecha-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+    }
+    /* Siempre ocupar 100% del padre y nunca desbordar */
+    #fechaInicio,
+    #fechaFin,
+    .btn-primary[onclick*="generarReporte"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        display: block;
+        overflow: hidden;
+    }
+}
+/* Inputs de fecha y botón de filtros responsivos en reportes */
+@media (max-width: 700px) {
+    #fechaInicio,
+    #fechaFin {
+        min-width: 180px !important;
+        max-width: 320px !important;
+        width: 100% !important;
+        font-size: 17px !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        height: 48px !important;
+        box-sizing: border-box;
+    }
+    .btn-primary[onclick*="generarReporte"] {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        font-size: 17px !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        height: 48px !important;
+        box-sizing: border-box;
+        display: block;
+    }
+}
+/* Tabla del carrito de ventas (solo index.php) */
+.cart-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.cart-table {
+    min-width: 600px;
+    width: 100%;
+    table-layout: auto;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+.cart-table th, .cart-table td {
+    white-space: nowrap;
+    padding: 12px 10px;
+    font-size: 13px;
+}
+.cart-table thead th {
+    text-align: left;
+    font-weight: 700;
+    color: #8b949e;
+    background: transparent;
+    border-bottom: 1px solid #30363d;
+}
+.cart-table tbody tr {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.cart-table tbody tr:hover {
+    background: #1c2128;
+    border-color: #58a6ff;
+}
+.cart-table td {
+    color: #c9d1d9;
+    font-weight: 500;
+}
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden !important;
+}
+/* Ocultar botón hamburguesa cuando el menú está abierto */
+body.sidebar-open .hamburger-btn {
+    display: none !important;
+}
+/* Todas las columnas siempre visibles */
+.col-estado, .col-pcompra, .col-id, .col-nombre {
+    display: table-cell !important;
+}
+
+/* Scroll horizontal para la tabla de productos */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.coach-table {
+    min-width: 900px;
+    width: 100%;
+    table-layout: auto;
+}
+.coach-table th, .coach-table td {
+    white-space: nowrap;
+}
 /* Dark Pro POS - Complete Stylesheet */
 
 * {
@@ -45,6 +167,8 @@ body {
 .main-container {
     display: flex;
     min-height: 100vh;
+    width: 100vw;
+    box-sizing: border-box;
 }
 
 .sidebar {
@@ -116,6 +240,8 @@ body {
     overflow-y: auto;
     height: 100vh;
     background: #0d1117;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .header {
@@ -177,6 +303,22 @@ body {
     grid-template-columns: 1.5fr 1fr;
     gap: 28px;
     margin-top: 36px;
+    min-width: 0;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+.dashboard-grid > div {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.card {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .card {
@@ -1121,8 +1263,9 @@ textarea.form-control {
     .table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        margin: 0 -20px;
-        padding: 0 20px;
+        margin: 0;
+        padding: 0;
+        width: 100%;
     }
 
     .coach-table {
@@ -1291,8 +1434,8 @@ textarea.form-control {
     .alert-container {
         top: 10px;
         right: 10px;
-        left: 10px;
-        max-width: none;
+        left: auto;
+        max-width: 90vw;
     }
 
     .alert {
