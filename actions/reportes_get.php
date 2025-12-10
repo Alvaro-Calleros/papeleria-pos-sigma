@@ -119,7 +119,7 @@ try {
                 $meta = $stmt->get_result()->fetch_assoc();
                 $stmt->close();
 
-                $stmt = $conn->prepare("SELECT p.nombre, vd.cantidad, vd.precio_unitario, vd.subtotal 
+                $stmt = $conn->prepare("SELECT vd.producto_id, p.nombre, vd.cantidad, vd.precio_unitario, vd.subtotal 
                                        FROM ventas_detalle vd 
                                        INNER JOIN productos p ON vd.producto_id = p.id 
                                        WHERE vd.venta_id = ?");
