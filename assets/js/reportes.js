@@ -159,14 +159,62 @@ function abrirModalDevolucion(ventaId, folio, total) {
     toggleModal('modalDevolucion', true);
 }
 
-// Confirmar devolución (frontend only - needs backend)
-function confirmarDevolucion() {
+// Confirmar devolución
+async function confirmarDevolucion() {
     const folio = document.getElementById('devFolio').value;
     const ventaId = document.getElementById('devVentaId').value;
-
-    console.log('Devolución a procesar (se requiere backend):', { folio, ventaId });
-    showAlert('Backend pendiente: la devolución aún no se procesa', 'warning');
-    toggleModal('modalDevolucion', false);
+    
+    // Recopilar productos seleccionados para devolver
+    const productosSeleccionados = [];
+    document.querySelectorAll('#devDetalleBody tr').forEach(row => {
+        const checkbox = row.querySelector('input[type="checkbox"]');
+        if (checkbox && checkbox.checked) {
+            const nombreProducto = row.cells[0]?.textContent || '';
+            const cantidad = parseInt(row.cells[1]?.textContent || 0);
+            const precioUnitario = parseFloat(row.cells[2]?.textContent?.replace('$', '') || 0);
+            const productId = row.dataset.productId;
+            
+            if (productId && cantidad > 0) {
+                productosSeleccionados.push({
+                    producto_id: parseInt(productId),
+                    cantidad: cantidad
+                });
+            }
+        }
+    });
+    
+    if (productosSeleccionados.length === 0) {
+        showAlert('Por favor selecciona al menos un producto para devolver', 'warning');
+        return;
+    }
+    
+    try {
+        const response = await fetch('actions/devoluciones_confirm.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                venta_id: parseInt(ventaId),
+                folio: folio,
+                productos: productosSeleccionados
+            })
+        });
+        
+        const res = await response.json();
+        
+        if (res.success) {
+            showAlert(`Devolución ${res.folio} registrada exitosamente`, 'success');
+            toggleModal('modalDevolucion', false);
+            // Recargar el reporte actual
+            generarReporte();
+        } else {
+            showAlert(res.message || 'Error al procesar la devolución', 'danger');
+        }
+    } catch (error) {
+        console.error('Error al procesar devolución:', error);
+        showAlert('Error al conectar con el servidor', 'danger');
+    }
 }
 
 // Ver detalles de venta
@@ -220,12 +268,17 @@ async function cargarDetalleVenta(ventaId) {
         if (!res.success) throw new Error(res.message || 'Sin respuesta');
         const detalles = res.data || [];
         if (!detalles.length) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Sin detalle recibido</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:#8b949e;">Sin detalle recibido</td></tr>';
             return;
         }
-        tbody.innerHTML = detalles.map(item => `
-            <tr>
-                <td>${item.nombre || 'Producto'}</td>
+        tbody.innerHTML = detalles.map((item, idx) => `
+            <tr data-product-id="${item.producto_id || idx}">
+                <td>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" checked style="cursor: pointer;">
+                        <span>${item.nombre || 'Producto'}</span>
+                    </label>
+                </td>
                 <td style="text-align:center;">${item.cantidad}</td>
                 <td style="text-align:right;">${formatMoney(item.precio_unitario)}</td>
                 <td style="text-align:right;">${formatMoney(item.subtotal)}</td>
@@ -233,7 +286,7 @@ async function cargarDetalleVenta(ventaId) {
         `).join('');
     } catch (err) {
         console.error('Error al cargar detalle de venta', err);
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#f85149;">No se pudo cargar el detalle</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:#f85149;">No se pudo cargar el detalle</td></tr>';
     }
 }
 
