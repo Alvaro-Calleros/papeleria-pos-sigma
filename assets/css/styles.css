@@ -1370,12 +1370,18 @@ textarea.form-control {
         vertical-align: top;
     }
 
-    /* Nombre de producto con wrap en móviles pequeños */
+    /* Nombre de producto con wrap en móviles pequeños - máximo 3 líneas */
     .coach-table td:first-child {
         white-space: normal;
         word-break: break-word;
         line-height: 1.2;
         max-width: 130px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     /* Botón de borrar aún más compacto */
