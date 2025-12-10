@@ -32,9 +32,14 @@ INSERT INTO existencias (producto_id, cantidad) VALUES
 (9, 120),
 (10, 90);
 
+-- Insertar proveedores de prueba
+INSERT INTO proveedores (nombre, email, telefono, direccion) VALUES
+('Distribuciones Sigma', 'ventas@distribucionessigma.com', '(55) 1234-5678', 'Av. Central 123, Ciudad'),
+('Papeleria Mayorista SA', 'contacto@mayorista.com', '(55) 9876-5432', 'Calle Comercio 45');
+
 -- Insertar una venta de ejemplo (folio: V-00001)
 INSERT INTO ventas (folio, usuario_id, subtotal, iva, total, fecha) VALUES
-('V-00001', 2, 86.21, 13.79, 100.00, '2024-11-20 10:30:00');
+('V-00001', 2, 86.21, 13.79, 100.00, '2025-11-20 10:30:00');
 
 -- Detalle de la venta ejemplo
 INSERT INTO ventas_detalle (venta_id, producto_id, cantidad, precio_unitario, subtotal) VALUES
@@ -48,8 +53,9 @@ UPDATE existencias SET cantidad = cantidad - 3 WHERE producto_id = 2;
 UPDATE existencias SET cantidad = cantidad - 3 WHERE producto_id = 4;
 
 -- Insertar una compra de ejemplo (folio: C-00001)
-INSERT INTO compras (folio, usuario_id, total, fecha) VALUES
-('C-00001', 1, 500.00, '2024-11-15 09:00:00');
+-- Usamos proveedor_id = 1 (Distribuciones Sigma) y creado_por = 1 (Admin Principal)
+INSERT INTO compras (folio, proveedor_id, creado_por, total, fecha) VALUES
+('C-00001', 1, 1, 500.00, '2024-11-15 09:00:00');
 
 -- Detalle de la compra
 INSERT INTO compras_detalle (compra_id, producto_id, cantidad, precio_unitario, subtotal) VALUES

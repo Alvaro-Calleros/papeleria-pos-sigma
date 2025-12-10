@@ -66,14 +66,28 @@ CREATE TABLE ventas_detalle (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 ) ENGINE=InnoDB;
 
+-- Tabla de proveedores (normaliza información de proveedor para compras)
+CREATE TABLE proveedores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(200) NOT NULL,
+    email VARCHAR(150),
+    telefono VARCHAR(50),
+    direccion TEXT,
+    activo TINYINT(1) DEFAULT 1,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
 -- Tabla de compras
+-- ahora registra proveedor_id (entrada) y creado_por (usuario que registró la compra)
 CREATE TABLE compras (
     id INT AUTO_INCREMENT PRIMARY KEY,
     folio VARCHAR(20) UNIQUE NOT NULL,
-    usuario_id INT NOT NULL,
+    proveedor_id INT DEFAULT NULL,
+    creado_por INT NOT NULL,
     total DECIMAL(10,2) NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (proveedor_id) REFERENCES proveedores(id),
+    FOREIGN KEY (creado_por) REFERENCES usuarios(id),
     INDEX idx_folio (folio),
     INDEX idx_fecha (fecha)
 ) ENGINE=InnoDB;
