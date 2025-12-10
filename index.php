@@ -95,7 +95,7 @@ require_once 'includes/auth_user.php';
                             <span class="view-link" id="itemsCount">0 items</span>
                         </div>
 
-                        <table class="coach-table cart-table">
+                        <table class="coach-table">
                             <thead>
                                 <tr>
                                     <th>Producto</th>
