@@ -397,3 +397,7 @@ function toggleModal(id, show = true) {
     if (!modal) return;
     modal.style.display = show ? 'flex' : 'none';
 }
+
+function closeModal(id) {
+    toggleModal(id, false);
+}
