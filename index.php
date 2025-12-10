@@ -98,11 +98,11 @@ require_once 'includes/auth_user.php';
                         <table class="coach-table">
                             <thead>
                                 <tr>
-                                    <th>Producto</th>
+                                    <th><span class="text-full">Producto</span><span class="text-short">Prod.</span></th>
                                     <th>Código</th>
                                     <th>Precio</th>
-                                    <th>Cantidad</th>
-                                    <th>Subtotal</th>
+                                    <th><span class="text-full">Cantidad</span><span class="text-short">Cant.</span></th>
+                                    <th><span class="text-full">Subtotal</span><span class="text-short">Sub.</span></th>
                                     <th></th>
                                 </tr>
                             </thead>
