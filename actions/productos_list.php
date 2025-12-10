@@ -3,7 +3,10 @@ require_once '../includes/config.php';
 require_once '../includes/db.php';
 require_once '../includes/auth_user.php'; // Permitir a usuarios ver lista (para ventas)
 
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
+
+// Capturar cualquier output no deseado
+ob_start();
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
@@ -69,6 +72,7 @@ try {
     }
     $stmt->close();
 
+    ob_clean(); // Limpiar cualquier output previo
     echo json_encode([
         'success' => true,
         'data' => $productos,
@@ -78,12 +82,24 @@ try {
             'total_items' => $total_items,
             'total_pages' => ceil($total_items / $limit)
         ]
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 
 } catch (Exception $e) {
+    ob_clean();
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Error al buscar productos: ' . $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
+} catch (Error $e) {
+    ob_clean();
+    http_response_code(500);
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Error fatal: ' . $e->getMessage()
+    ], JSON_UNESCAPED_UNICODE);
 }
 
 closeConnection($conn);
+ob_end_flush();
 ?>
