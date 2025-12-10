@@ -39,6 +39,10 @@ require_once 'includes/auth_admin.php';
                     <i class="fas fa-chart-line"></i>
                     <span>Reportes</span>
                 </div>
+                <div class="nav-item" onclick="window.location.href='compras.php'">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Compras</span>
+                </div>
             <?php endif; ?>
 
             <div style="flex: 1;"></div>
