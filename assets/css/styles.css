@@ -1157,7 +1157,7 @@ textarea.form-control {
 
     /* Botón de borrar más compacto */
     .delete-btn {
-        padding: 4px 6px;
+        padding: 2px 0px;
         font-size: 14px;
     }
 
@@ -1375,13 +1375,13 @@ textarea.form-control {
         white-space: normal;
         word-break: break-word;
         line-height: 1.2;
-        max-width: 110px;
+        max-width: 130px;
     }
 
     /* Botón de borrar aún más compacto */
     .delete-btn {
-        padding: 3px 5px;
-        font-size: 13px;
+        padding: 2px 4px;
+        font-size: 12px;
     }
 
     /* Controles de cantidad aún más compactos */
