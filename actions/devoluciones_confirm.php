@@ -13,16 +13,52 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $input = json_decode(file_get_contents('php://input'), true);
 $venta_id = $input['venta_id'] ?? null;
+$folio_venta = $input['folio'] ?? null;
 $productos_devolver = $input['productos'] ?? []; // [{producto_id, cantidad}]
 
-if (!$venta_id || empty($productos_devolver)) {
+$conn = getConnection();
+
+// Si viene folio pero no venta_id, buscar el ID
+if (!$venta_id && $folio_venta) {
+    $stmt = $conn->prepare("SELECT id FROM ventas WHERE folio = ?");
+    $stmt->bind_param('s', $folio_venta);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    if ($row = $res->fetch_assoc()) {
+        $venta_id = $row['id'];
+    }
+    $stmt->close();
+}
+
+if (!$venta_id) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Datos incompletos']);
+    echo json_encode(['success' => false, 'message' => 'Venta no especificada']);
+    exit();
+}
+
+// Si no se especifican productos, asumir devolución completa
+if (empty($productos_devolver)) {
+    $stmt = $conn->prepare("SELECT producto_id, cantidad FROM ventas_detalle WHERE venta_id = ?");
+    $stmt->bind_param('i', $venta_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    while ($row = $res->fetch_assoc()) {
+        $productos_devolver[] = [
+            'producto_id' => $row['producto_id'],
+            'cantidad' => $row['cantidad']
+        ];
+    }
+    $stmt->close();
+}
+
+if (empty($productos_devolver)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'No hay productos para devolver']);
     exit();
 }
 
 $usuario_id = $_SESSION['user_id'];
-$conn = getConnection();
+// $conn ya está abierta arriba
 $conn->begin_transaction();
 
 try {
