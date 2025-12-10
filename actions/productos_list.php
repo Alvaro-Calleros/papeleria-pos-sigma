@@ -8,7 +8,7 @@ header('Content-Type: application/json');
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$activo = isset($_GET['activo']) ? $_GET['activo'] : '1';
+$activo = isset($_GET['activo']) ? $_GET['activo'] : null;
 $offset = ($page - 1) * $limit;
 
 $conn = getConnection();
@@ -23,6 +23,7 @@ try {
     } elseif ($activo === '0') {
         $where_clause .= " AND p.activo = 0";
     }
+    // Si $activo es 'todos' o null, no agregamos filtro y se muestran todos
 
     if (!empty($search)) {
         $where_clause .= " AND (p.nombre LIKE ? OR p.codigo_barras LIKE ?)";
@@ -43,7 +44,7 @@ try {
     $stmt->close();
 
     // Obtener datos
-    $sql = "SELECT p.id, p.nombre, p.descripcion, p.precio_compra, p.precio_venta, p.codigo_barras, p.activo, e.cantidad as stock 
+        $sql = "SELECT p.id, p.nombre, p.descripcion, p.precio_compra, p.precio_venta, p.codigo_barras, p.activo, p.imagen, p.imagen_tipo, e.cantidad as stock 
             FROM productos p 
             LEFT JOIN existencias e ON p.id = e.producto_id 
             $where_clause 
@@ -61,8 +62,9 @@ try {
     
     $productos = [];
     while ($row = $result->fetch_assoc()) {
-        // No enviamos la imagen BLOB completa en la lista para no hacerla pesada
-        // Se podría hacer un endpoint separado para obtener la imagen por ID
+        if (!empty($row['imagen'])) {
+            $row['imagen'] = base64_encode($row['imagen']);
+        }
         $productos[] = $row;
     }
     $stmt->close();

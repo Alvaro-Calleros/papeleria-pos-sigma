@@ -127,11 +127,10 @@ function renderCarrito(data) {
     // Renderizar tabla
     if (carrito.length === 0) {
         tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center text-muted py-5">
-                    <div class="logo-emoji" style="font-size: 3rem; opacity: 0.3;">🌱</div>
-                    <p class="mt-2">El carrito está vacío</p>
-                    <small>Escanee productos para comenzar</small>
+            <tr style="background: transparent; border: none;">
+                <td colspan="6" style="padding: 60px 16px; text-align: center; color: #8b949e; border-radius: 0; background: transparent;">
+                    <p style="margin: 0 0 8px 0; color: #c9d1d9; font-weight: 600; font-size: 16px;">El carrito está vacío</p>
+                    <small style="color: #8b949e;">Escanee productos para comenzar</small>
                 </td>
             </tr>
         `;
@@ -153,23 +152,21 @@ function renderCarrito(data) {
         const subtotalItem = parseFloat(item.precio_unitario) * parseInt(item.cantidad);
         
         html += `
-            <tr class="fade-in-up">
+            <tr>
+                <td style="font-weight: 700; color: #c9d1d9;">${escapeHtml(item.nombre)}</td>
+                <td style="color: #8b949e; font-size: 13px;">${escapeHtml(item.codigo_barras)}</td>
+                <td style="text-align: right;">${formatMoney(item.precio_unitario)}</td>
                 <td>
-                    <div class="fw-bold">${escapeHtml(item.nombre)}</div>
-                </td>
-                <td><small class="text-muted">${escapeHtml(item.codigo_barras)}</small></td>
-                <td class="text-end">${formatMoney(item.precio_unitario)}</td>
-                <td class="text-center">
-                    <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary" onclick="cambiarCantidad(${index}, -1)">-</button>
-                        <span class="btn btn-light disabled" style="width: 50px; color: #000; font-weight: bold;">${item.cantidad}</span>
-                        <button class="btn btn-outline-secondary" onclick="cambiarCantidad(${index}, 1)">+</button>
+                    <div class="qty-controls">
+                        <button class="qty-btn" onclick="cambiarCantidad(${index}, -1)">−</button>
+                        <span class="qty-value">${item.cantidad}</span>
+                        <button class="qty-btn" onclick="cambiarCantidad(${index}, 1)">+</button>
                     </div>
                 </td>
-                <td class="text-end fw-bold">${formatMoney(subtotalItem)}</td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-outline-danger border-0" onclick="eliminarItem(${index})" title="Eliminar">
-                        🗑️
+                <td style="text-align: right; font-weight: 700;">${formatMoney(subtotalItem)}</td>
+                <td style="text-align: center;">
+                    <button class="delete-btn" onclick="eliminarItem(${index})" title="Eliminar">
+                        <i class="fas fa-trash"></i>
                     </button>
                 </td>
             </tr>
@@ -243,61 +240,88 @@ async function eliminarItem(index) {
 
 // Limpiar carrito
 async function limpiarCarrito() {
-    if (!confirm('¿Seguro que desea vaciar el carrito?')) return;
-    
-    try {
-        const response = await fetch('actions/ventas_clear.php', { method: 'POST' });
-        const data = await response.json();
-        
-        if (data.success) {
-            renderCarrito(data);
-            showAlert('Carrito vaciado', 'info');
-            document.getElementById('barcodeInput').focus();
+    showConfirmModal('¿Seguro que desea vaciar el carrito?', async () => {
+        try {
+            const response = await fetch('actions/ventas_clear.php', { method: 'POST' });
+            const data = await response.json();
+            
+            if (data.success) {
+                renderCarrito(data);
+                showAlert('Carrito vaciado', 'info');
+                document.getElementById('barcodeInput').focus();
+            }
+        } catch (error) {
+            console.error(error);
         }
-    } catch (error) {
-        console.error(error);
-    }
+    });
 }
 
 // Confirmar venta
+// Variable para guardar la función pendiente del modal
+let pendingConfirmCallback = null;
+
+// Mostrar modal de confirmación personalizado
+function showConfirmModal(message, callback) {
+    pendingConfirmCallback = callback;
+    document.getElementById('confirmMessage').textContent = message;
+    document.getElementById('confirmModal').style.display = 'flex';
+    document.getElementById('confirmYesBtn').focus();
+}
+
+// Cerrar modal de confirmación
+function closeConfirmModal() {
+    document.getElementById('confirmModal').style.display = 'none';
+    pendingConfirmCallback = null;
+}
+
+// Ejecutar callback del modal
+async function executePendingConfirm() {
+    if (pendingConfirmCallback) {
+        const callback = pendingConfirmCallback;
+        closeConfirmModal();
+        await callback();
+    }
+}
+
 async function confirmarVenta() {
     const btn = document.getElementById('confirmarBtn');
     const spinner = document.getElementById('loadingSpinner');
     
-    if (!confirm('¿Procesar venta?')) return;
-    
-    btn.disabled = true;
-    spinner.classList.remove('d-none');
-    
-    try {
-        const response = await fetch('actions/ventas_confirm.php', {
-            method: 'POST'
-        });
+    // Mostrar modal en lugar de confirm()
+    showConfirmModal('¿Procesar venta?', async () => {
+        btn.disabled = true;
+        spinner.classList.remove('d-none');
         
-        const data = await response.json();
-        
-        if (data.success) {
-            showAlert(`Venta ${data.folio} registrada exitosamente`, 'success');
+        try {
+            const response = await fetch('actions/ventas_confirm.php', {
+                method: 'POST'
+            });
             
-            // Limpiar UI
-            actualizarCarrito(); // Esto traerá el carrito vacío
-            actualizarStats();   // Actualizar contadores del día
+            const data = await response.json();
             
-            // Abrir ticket
-            window.open(`ticket.php?venta_id=${data.venta_id}`, 'Ticket', 'width=400,height=600');
+            if (data.success) {
+                showAlert(`Venta ${data.folio} registrada exitosamente`, 'success');
+                
+                // Limpiar UI
+                actualizarCarrito(); // Esto traerá el carrito vacío
+                actualizarStats();   // Actualizar contadores del día
+                
+                // Abrir ticket
+                window.open(`ticket.php?venta_id=${data.venta_id}`, 'Ticket', 'width=400,height=600');
+                
+            } else {
+                showAlert(data.message || 'Error al procesar venta', 'danger');
+            }
             
-        } else {
-            showAlert(data.message || 'Error al procesar venta', 'danger');
+        } catch (error) {
+            console.error(error);
+            showAlert('Error de conexión', 'danger');
+        } finally {
+            btn.disabled = false;
+            spinner.classList.add('d-none');
+            document.getElementById('barcodeInput').focus();
         }
-        
-    } catch (error) {
-        console.error(error);
-        showAlert('Error de conexión', 'danger');
-    } finally {
-        btn.disabled = false;
-        spinner.classList.add('d-none');
-        document.getElementById('barcodeInput').focus();
-    }
+    });
 }
 
 // Actualizar estadísticas del día
@@ -336,10 +360,12 @@ function escapeHtml(text) {
 function showAlert(message, type) {
     const container = document.getElementById('alertContainer');
     const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.className = `alert alert-${type}`;
     alert.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <span>${message}</span>
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
     `;
     
     container.innerHTML = '';
@@ -347,8 +373,8 @@ function showAlert(message, type) {
     
     // Auto cerrar después de 3s
     setTimeout(() => {
-        alert.classList.remove('show');
-        setTimeout(() => alert.remove(), 150);
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 300);
     }, 3000);
 }
 

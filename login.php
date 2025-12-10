@@ -11,32 +11,31 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Papelería POS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Login - Papelería Sigma</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body class="bg-light">
-    <div class="container">
-        <div class="row justify-content-center align-items-center min-vh-100">
-            <div class="col-md-5">
-                <div class="card shadow">
-                    <div class="card-body p-5">
-                        <h2 class="text-center mb-4">Papelería POS</h2>
-                        <form id="loginForm">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required autofocus>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <div id="errorMessage" class="alert alert-danger d-none"></div>
-                            <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
-                        </form>
-                    </div>
-                </div>
+<body class="login-body">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="assets/images/papeleria-sigma-logo.svg" alt="Papelería Sigma" class="login-logo">
             </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="coach-input" id="email" name="email" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="coach-input" id="password" name="password" required>
+                </div>
+
+                <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
+
+                <button type="submit" class="btn-primary">Iniciar Sesión</button>
+            </form>
         </div>
     </div>
 
@@ -59,11 +58,11 @@ if (isset($_SESSION['user_id'])) {
                     window.location.href = 'index.php';
                 } else {
                     errorDiv.textContent = data.message;
-                    errorDiv.classList.remove('d-none');
+                    errorDiv.style.display = 'flex';
                 }
             } catch (error) {
                 errorDiv.textContent = 'Error de conexión';
-                errorDiv.classList.remove('d-none');
+                errorDiv.style.display = 'flex';
             }
         });
     </script>
