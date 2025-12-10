@@ -17,6 +17,9 @@ async function generarReporte() {
             case 'ventas':
                 await generarReporteVentas(fechaInicio, fechaFin);
                 break;
+            case 'compras':
+                await generarReporteCompras(fechaInicio, fechaFin);
+                break;
             case 'devoluciones':
                 await generarReporteDevoluciones(fechaInicio, fechaFin);
                 break;
@@ -215,6 +218,72 @@ async function generarReporteVentas(start, end) {
     document.getElementById('infoRegistros').textContent = `${datos.length} registros encontrados`;
 }
 
+// Reporte de compras
+async function generarReporteCompras(start, end) {
+    const response = await fetch(`actions/compras_get.php?action=compras_rango&start=${start}&end=${end}`);
+    const res = await response.json();
+    
+    if (!res.success) {
+        throw new Error(res.message || 'Error en backend de compras');
+    }
+    
+    const datos = res.data;
+    const stats = res.stats || { productos_comprados: 0 };
+    datosActuales = datos;
+    
+    document.getElementById('tituloReporte').innerHTML = '<i class="fas fa-shopping-cart"></i><span>Reporte de Compras</span>';
+    
+    document.getElementById('resumenStats').style.display = 'grid';
+    document.getElementById('statVentas').textContent = datos.length; // Reusing label container but updated context in header
+    
+    // Changing labels for Compras context
+    const cards = document.querySelectorAll('#resumenStats .card-body span:first-child');
+    if(cards[0]) cards[0].textContent = 'Total Compras';
+    if(cards[1]) cards[1].textContent = 'Gasto Total';
+    if(cards[2]) cards[2].textContent = 'Prod. Comprados';
+    if(cards[3]) cards[3].parentElement.parentElement.style.display = 'none'; // Hide stock for compras report
+
+    const totalGastos = datos.reduce((sum, c) => sum + parseFloat(c.total), 0);
+    document.getElementById('statIngresos').textContent = formatMoney(totalGastos);
+    document.getElementById('statProductos').textContent = stats.productos_comprados;
+    
+    document.getElementById('headerReporte').innerHTML = `
+        <th>Folio</th>
+        <th>Proveedor</th>
+        <th>Fecha</th>
+        <th>Usuario</th>
+        <th style="text-align:right;">Total</th>
+        <th style="text-align:center;">Acciones</th>
+    `;
+    
+    let html = '';
+    if (datos.length === 0) {
+        html = '<tr><td colspan="6" style="text-align:center; padding: 24px; color: #8b949e;">No hay compras en este rango</td></tr>';
+    } else {
+        datos.forEach(compra => {
+            html += `
+                <tr>
+                    <td><strong>${compra.folio}</strong></td>
+                    <td>${compra.proveedor}</td>
+                    <td>${compra.fecha}</td>
+                    <td>${compra.usuario}</td>
+                    <td style="text-align:right;"><strong>${formatMoney(compra.total)}</strong></td>
+                    <td style="text-align:center;">
+                        <div class="action-group">
+                            <button class="action-btn" title="Ver detalles" onclick="verDetallesCompra(${compra.id}, '${compra.folio}')">
+                                <i class="fas fa-receipt"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+    
+    document.getElementById('bodyReporte').innerHTML = html;
+    document.getElementById('infoRegistros').textContent = `${datos.length} registros encontrados`;
+}
+
 
 // Exportar a CSV
 function exportarCSV() {
@@ -390,6 +459,50 @@ async function verDetallesVenta(ventaId, folio) {
     }
 }
 
+// Ver detalles de Compra
+async function verDetallesCompra(compraId, folio) {
+    const tbody = document.getElementById('detCompraBody');
+    document.getElementById('detCompraFolio').textContent = folio;
+    document.getElementById('detCompraProveedor').textContent = '-';
+    document.getElementById('detCompraUsuario').textContent = '-';
+    document.getElementById('detCompraFecha').textContent = '-';
+    document.getElementById('detCompraTotal').textContent = '-';
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Cargando detalle...</td></tr>';
+
+    toggleModal('modalDetalleCompra', true);
+
+    try {
+        const resp = await fetch(`actions/compras_get.php?action=detalle_compra&compra_id=${compraId}`);
+        const res = await resp.json();
+        if (!res.success) throw new Error(res.message || 'Backend pendiente');
+
+        const detalle = res.data || [];
+        const cabecera = res.meta || {};
+
+        if (cabecera.proveedor) document.getElementById('detCompraProveedor').textContent = cabecera.proveedor;
+        if (cabecera.usuario) document.getElementById('detCompraUsuario').textContent = cabecera.usuario;
+        if (cabecera.fecha) document.getElementById('detCompraFecha').textContent = cabecera.fecha;
+        if (cabecera.total) document.getElementById('detCompraTotal').textContent = formatMoney(cabecera.total);
+
+        const items = detalle || [];
+        if (!items.length) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Sin detalle recibido</td></tr>';
+            return;
+        }
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.nombre || 'Producto'}</td>
+                <td style="text-align:center;">${item.cantidad}</td>
+                <td style="text-align:right;">${formatMoney(item.precio_unitario)}</td>
+                <td style="text-align:right;">${formatMoney(item.subtotal)}</td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Error al cargar detalle de compra', err);
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#f85149;">No se pudo cargar el detalle</td></tr>';
+    }
+}
+
 // Cargar detalle de venta para mostrar en el modal (requiere backend que acepte folio)
 async function cargarDetalleVenta(ventaId) {
     const tbody = document.getElementById('devDetalleBody');
@@ -421,7 +534,7 @@ async function cargarDetalleVenta(ventaId) {
     }
 }
 
-async function verDetallesDevolucion(folio) {
+async function verDetallesDevolucion(id, folio) {
     const tbody = document.getElementById('detDevBody');
     document.getElementById('detDevFolio').textContent = folio;
     document.getElementById('detDevFolioVenta').textContent = '-';
@@ -429,6 +542,12 @@ async function verDetallesDevolucion(folio) {
     document.getElementById('detDevFecha').textContent = '-';
     document.getElementById('detDevTotal').textContent = '-';
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px; color:#8b949e;">Cargando detalle...</td></tr>';
+    
+    // Configurar botón imprimir
+    const btnPrint = document.getElementById('btnImprimirDevolucion');
+    if(btnPrint) {
+        btnPrint.onclick = () => window.open(`ticket_devolucion.php?id=${id}`, '_blank', 'width=400,height=600');
+    }
 
     toggleModal('modalDetalleDevolucion', true);
 
@@ -481,6 +600,13 @@ async function generarReporteDevoluciones(start, end) {
     document.getElementById('tituloReporte').innerHTML = '<i class="fas fa-undo"></i><span>Reporte de Devoluciones</span>';
     document.getElementById('resumenStats').style.display = 'grid';
     document.getElementById('statVentas').textContent = datos.length;
+    
+    const cards = document.querySelectorAll('#resumenStats .card-body span:first-child');
+    if(cards[0]) cards[0].textContent = 'Total Registros';
+    if(cards[1]) cards[1].textContent = 'Monto Total';
+    if(cards[2]) cards[2].textContent = 'Productos';
+    if(cards[3]) cards[3].parentElement.parentElement.style.display = 'block';
+
     const totalDevoluciones = datos.reduce((sum, d) => sum + parseFloat(d.total), 0);
     document.getElementById('statIngresos').textContent = formatMoney(totalDevoluciones);
     // Ocultar tarjetas de productos y stock en devoluciones
@@ -513,7 +639,7 @@ async function generarReporteDevoluciones(start, end) {
                     <td style="text-align:right;"><strong>${formatMoney(dev.total)}</strong></td>
                     <td style="text-align:center;">
                         <div class="action-group">
-                            <button class="action-btn" title="Ver detalles" onclick="verDetallesDevolucion('${dev.folio}')">
+                            <button class="action-btn" title="Ver detalles" onclick="verDetallesDevolucion(${dev.id}, '${dev.folio}')">
                                 <i class="fas fa-receipt"></i>
                             </button>
                         </div>

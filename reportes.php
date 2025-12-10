@@ -109,6 +109,7 @@ require_once 'includes/auth_admin.php';
                             <label for="tipoReporte" class="form-label">Tipo de Reporte</label>
                             <select class="coach-input" id="tipoReporte" style="height: 44px; box-sizing: border-box;">
                                 <option value="ventas">Ventas</option>
+                                <option value="compras">Compras</option>
                                 <option value="devoluciones">Devoluciones</option>
                                 <option value="compras">Compras</option>
                             </select>
@@ -425,7 +426,52 @@ require_once 'includes/auth_admin.php';
                 </div>
             </div>
             <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnImprimirDevolucion" type="button" style="margin-right: auto; background-color: #1f6feb; color: white;">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
                 <button class="btn btn-secondary" type="button" onclick="closeModal('modalDetalleDevolucion')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalle Compra -->
+    <div class="modal-backdrop" id="modalDetalleCompra" style="display: none;">
+        <div class="modal-content form-modal">
+            <div class="modal-header">
+                <h3 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-shopping-cart" style="color: #58a6ff;"></i>
+                    <span>Detalle de Compra</span>
+                </h3>
+                <button onclick="closeModal('modalDetalleCompra')" style="all: unset; cursor: pointer; font-size: 22px; color: #8b949e; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                    <div><strong>Folio:</strong> <span id="detCompraFolio">-</span></div>
+                    <div><strong>Proveedor:</strong> <span id="detCompraProveedor">-</span></div>
+                    <div><strong>Usuario:</strong> <span id="detCompraUsuario">-</span></div>
+                    <div><strong>Fecha:</strong> <span id="detCompraFecha">-</span></div>
+                    <div><strong>Total:</strong> <span id="detCompraTotal">-</span></div>
+                </div>
+                <div class="table-wrapper" style="overflow-x: auto; border: 1px solid #30363d; border-radius: 8px;">
+                    <table class="coach-table" style="margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th style="text-align: center;">Cant.</th>
+                                <th style="text-align: right;">Precio Unit.</th>
+                                <th style="text-align: right;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detCompraBody">
+                            <tr><td colspan="4" style="text-align: center; padding: 16px; color: #8b949e;">Cargando detalle...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" onclick="closeModal('modalDetalleCompra')">Cerrar</button>
             </div>
         </div>
     </div>
