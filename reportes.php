@@ -104,13 +104,14 @@ require_once 'includes/auth_admin.php';
                     </h3>
                 </div>
                 <div class="card-body">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: flex-end;">
+                    <div class="filtros-fecha-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 16px; align-items: flex-end;">
                         <div class="form-group" style="margin: 0;">
                             <label for="tipoReporte" class="form-label">Tipo de Reporte</label>
                             <select class="coach-input" id="tipoReporte" style="height: 44px; box-sizing: border-box;">
                                 <option value="ventas">Ventas</option>
                                 <option value="compras">Compras</option>
                                 <option value="devoluciones">Devoluciones</option>
+                                <option value="compras">Compras</option>
                             </select>
                         </div>
                         <div class="form-group" style="margin: 0;">
@@ -298,6 +299,97 @@ require_once 'includes/auth_admin.php';
     </div>
 
     <!-- Modal Detalle Devolución -->
+        <!-- Modal Detalle Compra -->
+        <div class="modal-backdrop" id="modalDetalleCompra" style="display: none;">
+            <div class="modal-content form-modal">
+                <div class="modal-header">
+                    <h3 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-file-invoice" style="color: #58a6ff;"></i>
+                        <span>Detalle de Compra</span>
+                    </h3>
+                    <button onclick="closeModal('modalDetalleCompra')" style="all: unset; cursor: pointer; font-size: 22px; color: #8b949e; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                        <div><strong>Folio:</strong> <span id="detCompraFolio">-</span></div>
+                        <div><strong>Proveedor:</strong> <span id="detCompraProveedor">-</span></div>
+                        <div><strong>Fecha:</strong> <span id="detCompraFecha">-</span></div>
+                        <div><strong>Total compra:</strong> <span id="detCompraTotal">-</span></div>
+                    </div>
+                    <div class="table-wrapper" style="overflow-x: auto; border: 1px solid #30363d; border-radius: 8px;">
+                        <table class="coach-table" style="margin: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th style="text-align: center;">Cant.</th>
+                                    <th style="text-align: right;">Precio</th>
+                                    <th style="text-align: right;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detCompraBody">
+                                <tr><td colspan="4" style="text-align: center; padding: 16px; color: #8b949e;">Cargando detalle...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" onclick="closeModal('modalDetalleCompra')">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Devolución Compra -->
+        <div class="modal-backdrop" id="modalDevolucionCompra" style="display: none;">
+            <div class="modal-content" style="max-width: 640px;">
+                <div class="modal-header">
+                    <h3 style="margin: 0; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-undo-alt" style="color: #58a6ff;"></i>
+                        <span>Procesar Devolución de Compra</span>
+                    </h3>
+                    <button onclick="closeModal('modalDevolucionCompra')" style="all: unset; cursor: pointer; font-size: 22px; color: #8b949e; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                    <input type="hidden" id="devCompraFolio">
+                    <div class="form-group">
+                        <label class="form-label">Folio de Compra</label>
+                        <div style="color: #c9d1d9;" id="devCompraFolioDisplay">-</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total original</label>
+                        <div style="color: #c9d1d9;" id="devCompraTotalDisplay">-</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Productos en la compra</label>
+                        <div class="table-wrapper" style="overflow-x: auto; border: 1px solid #30363d; border-radius: 8px;">
+                            <table class="coach-table" style="margin: 0;">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th style="text-align: center;">Cant.</th>
+                                        <th style="text-align: right;">Precio</th>
+                                        <th style="text-align: right;">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="devCompraDetalleBody">
+                                    <tr><td colspan="4" style="text-align: center; padding: 16px; color: #8b949e;">Cargando detalle...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="alert" style="background: #161b22; border: 1px solid #30363d; color: #c9d1d9; padding: 12px 14px; border-radius: 8px;">
+                        <small><strong>Nota:</strong> Selecciona los productos que deseas devolver. Los productos marcados serán devueltos y el inventario se actualizará automáticamente.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" onclick="closeModal('modalDevolucionCompra')">Cancelar</button>
+                    <button class="btn btn-danger" type="button" onclick="confirmarDevolucionCompra()">Procesar Devolución</button>
+                </div>
+            </div>
+        </div>
     <div class="modal-backdrop" id="modalDetalleDevolucion" style="display: none;">
         <div class="modal-content form-modal">
             <div class="modal-header">
@@ -425,6 +517,7 @@ require_once 'includes/auth_admin.php';
             const overlay = document.querySelector('.sidebar-overlay');
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+            document.body.classList.toggle('sidebar-open', sidebar.classList.contains('active'));
         }
     </script>
 </body>

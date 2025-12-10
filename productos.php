@@ -112,29 +112,42 @@ require_once 'includes/auth_admin.php';
                     </button>
                 </div>
                 <div class="card-body" style="padding: 0; overflow-x: auto;">
-                    <table class="coach-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 60px;">ID</th>
-                                <th style="width: 80px;">Imagen</th>
-                                <th>Nombre</th>
-                                <th style="width: 140px;">Código</th>
-                                <th style="width: 100px; text-align: right;">P. Compra</th>
-                                <th style="width: 100px; text-align: right;">P. Venta</th>
-                                <th style="width: 80px; text-align: center;">Stock</th>
-                                <th style="width: 100px;">Estado</th>
-                                <th style="width: 160px; text-align: center;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productosBody">
-                            <tr>
-                                <td colspan="9" style="text-align: center; padding: 60px 20px;">
-                                    <div class="spinner-custom"></div>
-                                    <p style="color: #8b949e; margin-top: 16px;">Cargando productos...</p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-wrapper">
+                        <table class="coach-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-id">ID</th>
+                                    <th>Imagen</th>
+                                    <th class="col-nombre">Nombre</th>
+                                    <th>Código</th>
+                                    <th class="col-pcompra">P. Compra</th>
+                                    <th>P. Venta</th>
+                                    <th>Stock</th>
+                                    <th class="col-estado">Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productosBody">
+                                <tr>
+                                    <td class="col-id"></td>
+                                    <td></td>
+                                    <td class="col-nombre"></td>
+                                    <td></td>
+                                    <td class="col-pcompra"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="col-estado"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="9" style="text-align: center; padding: 60px 20px;">
+                                        <div class="spinner-custom"></div>
+                                        <p style="color: #8b949e; margin-top: 16px;">Cargando productos...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="card-footer" style="display: flex; justify-content: center;">
                     <div id="pagination" style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -349,6 +362,7 @@ require_once 'includes/auth_admin.php';
             const overlay = document.querySelector('.sidebar-overlay');
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+            document.body.classList.toggle('sidebar-open', sidebar.classList.contains('active'));
         }
 
         function openModalProducto() {
