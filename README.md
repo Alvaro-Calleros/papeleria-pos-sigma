@@ -1,18 +1,18 @@
-# 🌱 Papelería Sigma - Sistema POS
+# Papelería Sigma - Sistema POS
 
 Sistema de Punto de Venta moderno con diseño Dark Pro profesional para papelería.
 
-## ✨ Características Principales
+## Características Principales
 
-- 🎨 **Diseño Dark Pro** - Interfaz moderna inspirada en GitHub Dark
-- 🛒 **POS Completo** - Carrito de ventas con escaneo de códigos de barras
-- 📦 **Gestión de Productos** - CRUD completo con imágenes
-- 📊 **Reportes** - Estadísticas y exportación a CSV
-- 🔐 **Sistema de Roles** - Admin y Operador con permisos diferenciados
-- 🖨️ **Tickets 80×40mm** - Impresión térmica optimizada
-- 🎯 **Sin Dependencias** - No requiere Bootstrap, JavaScript vanilla puro
+- **Diseño Dark Pro** - Interfaz moderna inspirada en GitHub Dark
+- **POS Completo** - Carrito de ventas con escaneo de códigos de barras
+- **Gestión de Productos** - CRUD completo con imágenes
+- **Reportes** - Estadísticas y exportación a CSV
+- **Sistema de Roles** - Admin y Operador con permisos diferenciados
+- **Tickets 80×40mm** - Impresión térmica optimizada
+- **Sin Dependencias** - No requiere Bootstrap, JavaScript vanilla puro
 
-## 📋 Requisitos
+## Requisitos
 
 - XAMPP (PHP 8.0+, MySQL 8.0+)
 - Navegador web moderno (Chrome 90+, Firefox 88+, Safari 14+)
@@ -160,7 +160,7 @@ git push origin feature/backend/ventas-transac
 - [ ] Dashboard con gráficas
 - [ ] PWA para uso offline
 
-## 🎨 Paleta de Colores Dark Pro
+## Paleta de Colores Dark Pro
 
 ```
 Background:     #0d1117
@@ -174,13 +174,13 @@ Text:           #c9d1d9
 Muted:          #8b949e
 ```
 
-## 📚 Documentación
+## Documentación
 
 - **Frontend:** `docs/FRONTEND-DOCUMENTACION.md` (642 líneas)
 - **Backend:** `backend.md`
 - **Base de Datos:** `sql/documentacion.md`
 
-## 🤝 Equipo
+## Equipo
 
 - **Líder:** Álvaro
 - **Frontend:** Abraham
@@ -188,7 +188,7 @@ Muted:          #8b949e
 - **Base de Datos:** Santi, Fer
 - **Hardware:** Nolberto
 
-## 📞 Soporte
+## Soporte
 
 Para dudas técnicas, abrir issue en GitHub o consultar con el líder del proyecto.
 
