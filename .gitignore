@@ -1,0 +1,15 @@
+# Archivos de configuración con credenciales
+includes/config.php
+
+# Sistema
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporal
+temp/
+tmp/
