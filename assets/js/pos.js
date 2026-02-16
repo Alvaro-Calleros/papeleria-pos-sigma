@@ -4,26 +4,35 @@
 let requestEnProgreso = false;
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('POS.js cargado correctamente');
+    
+    const barcodeInput = document.getElementById('barcodeInput');
+    
+    if (!barcodeInput) {
+        console.error('ERROR: No se encontró el input barcodeInput');
+        return;
+    }
+    
+    console.log('Input encontrado:', barcodeInput);
+    
     actualizarCarrito();
     actualizarStats();
     
     // Focus en input al cargar
-    document.getElementById('barcodeInput').focus();
+    barcodeInput.focus();
     
-    // Listener para scanner
-    document.getElementById('barcodeInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
+    // Listener para Enter
+    barcodeInput.addEventListener('keydown', function(e) {
+        console.log('Tecla presionada:', e.key);
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            console.log('✓ Enter detectado, valor:', barcodeInput.value);
             e.preventDefault();
+            e.stopPropagation();
             agregarProducto();
         }
     });
-
-    // Mantener focus en input (opcional, puede ser molesto si se quiere usar otros inputs)
-    // document.addEventListener('click', (e) => {
-    //     if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
-    //         document.getElementById('barcodeInput').focus();
-    //     }
-    // });
+    
+    console.log('Event listener registrado correctamente');
 });
 
 // Agregar producto al carrito

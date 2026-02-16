@@ -35,6 +35,10 @@ if (isset($_SESSION['user_id'])) {
                 <div id="errorMessage" class="alert alert-danger" style="display: none;"></div>
 
                 <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                
+                <div style="margin-top: 20px; text-align: center; font-size: 15px; color: #555;">
+                    Demo: <strong>admin@papeleria.com</strong> / <strong>admin123</strong>
+                </div>
             </form>
         </div>
     </div>
